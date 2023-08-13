@@ -1,0 +1,39 @@
+version: "3.8"
+services:
+  server-dev:
+    container_name: fiesta_dev_server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '5173:5173'
+    volumes:
+      - .:/app
+
+  db:
+    image: postgres
+    container_name: fiesta_pgdb
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: fiesta_pgadmin
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+
+volumes:
+  pgdata:
+  pgadmin:
