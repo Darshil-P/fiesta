@@ -1,6 +1,11 @@
-import { pgTable, serial, varchar } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
+import { pgTable, serial, timestamp, text } from 'drizzle-orm/pg-core';
 
-export const testTable = pgTable('test', {
-	id: serial('id').primaryKey(),
-	data: varchar('data', { length: 255 }).notNull()
+export const usersTable = pgTable('users', {
+	userId: serial('user_id').primaryKey(),
+	name: text('name').notNull(),
+	email: text('email').notNull().unique(),
+	dateCreated: timestamp('date_created', { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`)
 });
