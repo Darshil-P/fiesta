@@ -25,7 +25,7 @@ export const GET = (async ({ url }) => {
 }) satisfies RequestHandler;
 
 export const POST = (async ({ request }) => {
-	type NewUser = Omit<InferModel<typeof usersTable, 'insert'>, 'id' | 'dateCreated'>;
+	type NewUser = Omit<InferModel<typeof usersTable, 'insert'>, 'userId' | 'dateCreated'>;
 	const newUser: NewUser = await request.json();
 
 	const userSchema = joi.object({
