@@ -1,31 +1,24 @@
 import { sql } from 'drizzle-orm';
 import {
-	pgTable,
-	serial,
-	primaryKey,
+	boolean,
 	integer,
-	timestamp,
+	pgTable,
+	primaryKey,
+	serial,
 	text,
-	unique,
-	boolean
+	timestamp,
+	unique
 } from 'drizzle-orm/pg-core';
 
-export const usersTable = pgTable(
-	'users',
-	{
-		userId: serial('user_id').primaryKey(),
-		name: text('name').notNull(),
-		email: text('email').notNull().unique(),
-		dateCreated: timestamp('date_created', { withTimezone: true })
-			.notNull()
-			.default(sql`CURRENT_TIMESTAMP`)
-	},
-	(users) => {
-		return {
-			emailUniqueIndex: unique().on(users.email)
-		};
-	}
-);
+export const usersTable = pgTable('users', {
+	userId: integer('user_id')
+		.primaryKey()
+		.references(() => userCredentialsTable.userId),
+	name: text('name').notNull(),
+	dateCreated: timestamp('date_created', { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`)
+});
 
 export const permissionsTable = pgTable(
 	'permissions',
@@ -142,9 +135,7 @@ export const subEventsTable = pgTable('sub_events', {
 export const userCredentialsTable = pgTable(
 	'user_credentials',
 	{
-		userId: integer('user_id')
-			.primaryKey()
-			.references(() => usersTable.userId),
+		userId: serial('user_id').primaryKey(),
 		mobile: text('mobile').notNull(),
 		email: text('email').notNull(),
 		password: text('password').notNull()

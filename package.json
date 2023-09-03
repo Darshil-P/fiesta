@@ -17,6 +17,7 @@
 		"@skeletonlabs/tw-plugin": "^0.1.0",
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/kit": "^1.20.4",
+		"@types/bcryptjs": "^2.4.3",
 		"@types/node": "^20.5.7",
 		"@types/pg": "^8.10.2",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
@@ -43,6 +44,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"bcryptjs": "^2.4.3",
 		"drizzle-orm": "^0.28.2",
 		"joi": "^17.9.2",
 		"pg": "^8.11.2"
