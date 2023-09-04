@@ -1,5 +1,6 @@
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
+import { NAME_REGEX, PASSWORD_REGEX, PHONE_REGEX } from '$lib/server/regex';
 import { userCredentialsTable, usersTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import bcrypt from 'bcryptjs';
@@ -12,19 +13,10 @@ export const POST = (async ({ request }) => {
 	const data = await request.json();
 
 	const userSchema = joi.object({
-		name: joi
-			.string()
-			.regex(/^[a-zA-Z ,.'-]{2,64}$/)
-			.required(),
+		name: joi.string().regex(NAME_REGEX).required(),
 		email: joi.string().email().required(),
-		mobile: joi
-			.string()
-			.regex(/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/)
-			.required(),
-		password: joi
-			.string()
-			.regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
-			.required()
+		mobile: joi.string().regex(PHONE_REGEX).required(),
+		password: joi.string().regex(PASSWORD_REGEX).required()
 	});
 
 	const { error: validationError } = userSchema.validate(data);
