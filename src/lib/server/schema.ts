@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
 import {
 	boolean,
+	date,
 	integer,
 	pgTable,
 	primaryKey,
@@ -98,14 +99,16 @@ export const eventsTable = pgTable(
 	'events',
 	{
 		eventId: serial('event_id').primaryKey(),
-		organizatioId: integer('organization_id').references(() => organizationsTable.organizationId),
+		organizationId: integer('organization_id').references(() => organizationsTable.organizationId),
 		isUserOrganized: boolean('is_user_organized').notNull(),
 		name: text('name').notNull(),
 		description: text('description').notNull(),
+		startDate: date('start_date').notNull(),
+		endDate: date('end_date').notNull(),
 		status: text('status').notNull()
 	},
 	(events) => ({
-		organizationIdUniqueIndex: unique().on(events.organizatioId)
+		organizationIdUniqueIndex: unique().on(events.organizationId)
 	})
 );
 
