@@ -8,14 +8,14 @@ import { eq } from 'drizzle-orm';
 import joi from 'joi';
 
 export const POST = (async ({ request }) => {
-	const data = await request.json();
+	const requestBody = await request.json();
 
-	const schema = joi.object({
+	const requestSchema = joi.object({
 		email: joi.string().email().required(),
 		password: joi.string().regex(PASSWORD_REGEX).required()
 	});
 
-	const { error: validationError } = schema.validate(data);
+	const { error: validationError } = requestSchema.validate(requestBody);
 
 	if (validationError) {
 		throw error(400, validationError.details[0].message);
@@ -25,16 +25,16 @@ export const POST = (async ({ request }) => {
 		.select({ password: userCredentialsTable.password })
 		.from(userCredentialsTable)
 		.where(
-			data.email
-				? eq(userCredentialsTable.email, data.email)
-				: eq(userCredentialsTable.mobile, data.mobile)
+			requestBody.email
+				? eq(userCredentialsTable.email, requestBody.email)
+				: eq(userCredentialsTable.mobile, requestBody.mobile)
 		);
 
 	if (userCredentials.length == 0) {
 		throw error(404, 'Email or Mobile not Registered');
 	}
 
-	const validPass = await bcrypt.compare(data.password, userCredentials[0].password);
+	const validPass = await bcrypt.compare(requestBody.password, userCredentials[0].password);
 
 	if (!validPass) {
 		throw error(401, 'Incorrect Password');

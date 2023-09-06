@@ -6,24 +6,26 @@ import { eq } from 'drizzle-orm';
 import Joi from 'joi';
 
 export const GET = (async ({ params }) => {
-	const id = Number.parseInt(params.id ?? '');
+	const organizationId = Number.parseInt(params.id ?? '');
 
 	const requestSchema = Joi.number().required();
 
-	const { error: validationError } = requestSchema.validate(id);
+	const { error: validationError } = requestSchema.validate(organizationId);
 
 	if (validationError) {
 		throw error(400, validationError.details[0].message);
 	}
 
-	const organizationDetails = await db
+	const organizations = await db
 		.select()
 		.from(organizationsTable)
-		.where(eq(organizationsTable.organizationId, id));
+		.where(eq(organizationsTable.organizationId, organizationId));
 
-	if (organizationDetails.length == 0) {
+	if (organizations.length == 0) {
 		throw error(404, 'Organization Not Found');
 	}
 
-	return jsonResponse(JSON.stringify(organizationDetails[0]));
+	const organizationDetails = organizations[0];
+
+	return jsonResponse(JSON.stringify(organizationDetails));
 }) satisfies RequestHandler;

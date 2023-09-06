@@ -25,15 +25,15 @@ export const GET = (async ({ url }) => {
 }) satisfies RequestHandler;
 
 export const POST = (async ({ request }) => {
-	type NewUser = Omit<InferModel<typeof usersTable, 'insert'>, 'userId' | 'dateCreated'>;
+	type NewUser = Omit<InferModel<typeof usersTable, 'insert'>, 'dateCreated'>;
 	const newUser: NewUser = await request.json();
 
-	const userSchema = joi.object({
+	const requestSchema = joi.object({
 		name: joi.string().alphanum().min(2).max(64).required(),
 		email: joi.string().email().required()
 	});
 
-	const { error: validationError } = userSchema.validate(newUser);
+	const { error: validationError } = requestSchema.validate(newUser);
 
 	if (validationError) {
 		throw error(400, validationError.details[0].message);

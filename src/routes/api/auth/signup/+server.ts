@@ -10,25 +10,25 @@ import joi from 'joi';
 export const POST = (async ({ request }) => {
 	type NewUser = Omit<InferModel<typeof usersTable, 'insert'>, 'dateCreated'>;
 	type NewUserCredential = Omit<InferModel<typeof userCredentialsTable, 'insert'>, 'userId'>;
-	const data = await request.json();
+	const requestBody = await request.json();
 
-	const userSchema = joi.object({
+	const requestSchema = joi.object({
 		name: joi.string().regex(NAME_REGEX).required(),
 		email: joi.string().email().required(),
 		mobile: joi.string().regex(PHONE_REGEX).required(),
 		password: joi.string().regex(PASSWORD_REGEX).required()
 	});
 
-	const { error: validationError } = userSchema.validate(data);
+	const { error: validationError } = requestSchema.validate(requestBody);
 
 	if (validationError) {
 		throw error(400, validationError.details[0].message);
 	}
 
-	data.password = await bcrypt.hash(data.password, 12);
+	requestBody.password = await bcrypt.hash(requestBody.password, 12);
 
-	const newUserCredential: NewUserCredential = data;
-	const newUser: NewUser = data;
+	const newUserCredential: NewUserCredential = requestBody;
+	const newUser: NewUser = requestBody;
 
 	const userCredentials = await db
 		.insert(userCredentialsTable)
