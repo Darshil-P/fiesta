@@ -24,10 +24,7 @@ export const GET = (async ({ params }) => {
 	const data = await db
 		.select()
 		.from(eventsTable)
-		.innerJoin(
-			organizationsTable,
-			eq(eventsTable.organizationId, organizationsTable.organizationId)
-		)
+		.leftJoin(organizationsTable, eq(eventsTable.organizationId, organizationsTable.organizationId))
 		.where(eq(eventsTable.eventId, id));
 
 	const subEvents = await db
