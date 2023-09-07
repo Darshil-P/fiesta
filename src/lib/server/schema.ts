@@ -36,7 +36,7 @@ export const permissionsTable = pgTable(
 
 export const rolesTable = pgTable('roles', {
 	roleId: serial('role_id').primaryKey(),
-	organization_id: integer('organization_id')
+	organizationId: integer('organization_id')
 		.notNull()
 		.references(() => usersTable.userId),
 	name: text('name').notNull()
