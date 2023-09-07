@@ -1,12 +1,6 @@
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
-import {
-	eventMembersTable,
-	eventsTable,
-	membersTable,
-	organizationsTable,
-	usersTable
-} from '$lib/server/schema';
+import { eventMembersTable, eventsTable, organizationsTable, usersTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import Joi from 'joi';
@@ -26,8 +20,7 @@ export const GET = (async ({ params }) => {
 		.select({ eventsTable, organizationsTable })
 		.from(eventsTable)
 		.rightJoin(eventMembersTable, eq(eventMembersTable.eventId, eventsTable.eventId))
-		.innerJoin(membersTable, eq(membersTable.memberId, eventMembersTable.memberId))
-		.innerJoin(usersTable, eq(usersTable.userId, membersTable.userId))
+		.innerJoin(usersTable, eq(usersTable.userId, eventMembersTable.userId))
 		.leftJoin(organizationsTable, eq(organizationsTable.organizationId, eventsTable.organizationId))
 		.where(eq(usersTable.userId, userId));
 
