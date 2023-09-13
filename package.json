@@ -47,6 +47,7 @@
 		"bcryptjs": "^2.4.3",
 		"drizzle-orm": "^0.28.6",
 		"joi": "^17.10.1",
+		"material-symbols": "^0.12.0",
 		"pg": "^8.11.3"
 	}
 }
