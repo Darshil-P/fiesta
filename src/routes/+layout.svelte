@@ -6,7 +6,7 @@
 
 	$: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 
-	import { AppBar } from '$lib';
+	import { AppBar, Footer } from '$lib';
 	import { AppShell } from '@skeletonlabs/skeleton';
 	import 'material-symbols';
 </script>
@@ -15,6 +15,11 @@
 	{@html webManifestLink}
 </svelte:head>
 <AppShell>
-	<AppBar />
+	<svelte:fragment slot="header">
+		<AppBar />
+	</svelte:fragment>
 	<slot />
+	<svelte:fragment slot="pageFooter">
+		<Footer />
+	</svelte:fragment>
 </AppShell>
