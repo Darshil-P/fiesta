@@ -4,6 +4,16 @@
 @tailwind utilities;
 @tailwind variants;
 
+@font-face {
+	font-family: 'Quicksand';
+	src: url('fonts/Quicksand-VariableFont_wght.ttf');
+}
+
+:root [data-theme='gold-nouveau'] {
+	--theme-font-family-base: 'Quicksand';
+	--theme-font-family-heading: 'Quicksand';
+}
+
 html,
 body {
 	@apply h-full;
