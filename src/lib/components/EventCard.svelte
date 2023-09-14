@@ -6,7 +6,7 @@
 	export let price: number;
 </script>
 
-<div class="card w-96 rounded-3xl variant-glass variant-ringed-surface p-px">
+<div class="card min-w-[20rem] rounded-3xl variant-glass variant-ringed-surface p-px">
 	<header class="aspect-video">
 		<img
 			src="https://www.lightstalking.com/wp-content/uploads/backlit-beach-color-258109-3-1024x576.jpg"
