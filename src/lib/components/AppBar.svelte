@@ -3,16 +3,17 @@
 </script>
 
 <AppBar
-	gridColumns="lg:grid-cols-8 xl:grid-cols-4"
-	slotLead="place-self-end"
-	slotDefault="place-self-center align-middle lg:col-span-4 xl:col-span-2"
-	slotTrail="hidden lg:flex lg:place-content-end lg:col-span-3 xl:col-span-1 xl:place-content-start"
+	gridColumns="grid-cols-5"
+	slotLead="place-self-start"
+	slotDefault="place-self-start col-span-3"
+	slotTrail="place-content-end"
+	regionRowMain="max-w-7xl place-self-center"
 >
 	<svelte:fragment slot="lead">
-		<img src="fiesta.svg" alt="fiesta logo" class="" />
+		<img src="fiesta.svg" alt="fiesta logo" />
 	</svelte:fragment>
 	<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] h-12">
-		<input type="text" placeholder="Search" class="px-4 w-full max-w-72" />
+		<input type="text" placeholder="Search" class="px-4 w-72" />
 		<select class="w-40 px-2 mr-2">
 			<option value="0" disabled selected hidden>City</option>
 		</select>
