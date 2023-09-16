@@ -1,6 +1,6 @@
+import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Client } from 'pg';
-import 'dotenv/config';
 
 const client = new Client({
 	host: 'db',

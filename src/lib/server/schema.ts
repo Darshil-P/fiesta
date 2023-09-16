@@ -18,7 +18,8 @@ export const usersTable = pgTable('users', {
 	name: text('name').notNull(),
 	dateCreated: timestamp('date_created', { withTimezone: true })
 		.notNull()
-		.default(sql`CURRENT_TIMESTAMP`)
+		.default(sql`CURRENT_TIMESTAMP`),
+	avatarId: text('avatar_id')
 });
 
 export const permissionsTable = pgTable(
@@ -60,15 +61,19 @@ export const rolePermissionsTable = pgTable(
 export const organizationsTable = pgTable('organizations', {
 	organizationId: serial('organization_id').primaryKey(),
 	name: text('name').notNull(),
-	description: text('description').notNull(),
-	verified: boolean('verified').notNull().default(false)
+	about: text('about').notNull(),
+	verified: boolean('verified').notNull().default(false),
+	logoId: text('logo_id'),
+	bannerId: text('banner_id')
 });
 
 export const membersTable = pgTable(
 	'members',
 	{
 		memberId: serial('member_id').primaryKey(),
-		userId: integer('user_id').notNull(),
+		userId: integer('user_id')
+			.notNull()
+			.references(() => usersTable.userId),
 		dateJoined: timestamp('date_joined', { withTimezone: true })
 			.notNull()
 			.default(sql`CURRENT_TIMESTAMP`)
@@ -100,12 +105,17 @@ export const eventsTable = pgTable(
 	{
 		eventId: serial('event_id').primaryKey(),
 		organizationId: integer('organization_id').references(() => organizationsTable.organizationId),
-		isUserOrganized: boolean('is_user_organized').notNull(),
+		userId: integer('user_id').references(() => usersTable.userId),
 		name: text('name').notNull(),
 		description: text('description').notNull(),
 		startDate: date('start_date').notNull(),
 		endDate: date('end_date').notNull(),
-		status: text('status').notNull()
+		status: text('status').notNull(),
+		category: text('category').notNull(),
+		terms: text('terms'),
+		thumbnailId: text('thumbnail_id').notNull(),
+		imageIds: text('image_ids').array().notNull().default([]),
+		videoId: text('video_id')
 	},
 	(events) => ({
 		organizationIdUniqueIndex: unique().on(events.organizationId)
@@ -131,8 +141,9 @@ export const subEventsTable = pgTable('sub_events', {
 	categoryId: integer('category_id')
 		.notNull()
 		.references(() => categoriesTable.categoryId),
+	dateTime: date('datetime').notNull(),
 	name: text('name').notNull(),
-	description: text('description')
+	description: text('description').notNull()
 });
 
 export const userCredentialsTable = pgTable(
@@ -166,7 +177,8 @@ export const organizationMembersTable = pgTable(
 		organizationUserUnique: unique().on(
 			organizationMembers.organizationId,
 			organizationMembers.userId
-		)
+		),
+		organizationMemberUnique: unique().on(organizationMembers.memberId)
 	})
 );
 
@@ -182,6 +194,7 @@ export const eventMembersTable = pgTable(
 	},
 	(eventMembers) => ({
 		eventMemberPrimaryKey: primaryKey(eventMembers.eventId, eventMembers.memberId),
-		eventUserUnique: unique().on(eventMembers.eventId, eventMembers.userId)
+		eventUserUnique: unique().on(eventMembers.eventId, eventMembers.userId),
+		eventMemberUnique: unique().on(eventMembers.memberId)
 	})
 );
