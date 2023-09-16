@@ -9,6 +9,7 @@ services:
       - '80:5173'
     volumes:
       - .:/app
+      - data:/app/src/lib/uploads
 
   db:
     image: postgres
@@ -37,3 +38,4 @@ services:
 volumes:
   pgdata:
   pgadmin:
+  data:
