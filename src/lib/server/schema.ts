@@ -1,15 +1,26 @@
 import { sql } from 'drizzle-orm';
 import {
 	boolean,
+	customType,
 	date,
 	integer,
 	pgTable,
 	primaryKey,
-	serial,
 	text,
 	timestamp,
 	unique
 } from 'drizzle-orm/pg-core';
+
+export const identity = (name: string) =>
+	customType<{
+		data: number;
+		notNull: true;
+		default: true;
+	}>({
+		dataType() {
+			return 'INTEGER GENERATED ALWAYS AS IDENTITY';
+		}
+	})(name);
 
 export const usersTable = pgTable('users', {
 	userId: integer('user_id')
@@ -25,7 +36,7 @@ export const usersTable = pgTable('users', {
 export const permissionsTable = pgTable(
 	'permissions',
 	{
-		permissionId: serial('permission_id').primaryKey(),
+		permissionId: identity('permission_id').notNull().primaryKey(),
 		permission: text('permission').notNull()
 	},
 	(permissions) => {
@@ -36,7 +47,7 @@ export const permissionsTable = pgTable(
 );
 
 export const rolesTable = pgTable('roles', {
-	roleId: serial('role_id').primaryKey(),
+	roleId: identity('role_id').notNull().primaryKey(),
 	organizationId: integer('organization_id')
 		.notNull()
 		.references(() => usersTable.userId),
@@ -59,7 +70,7 @@ export const rolePermissionsTable = pgTable(
 );
 
 export const organizationsTable = pgTable('organizations', {
-	organizationId: serial('organization_id').primaryKey(),
+	organizationId: identity('organization_id').notNull().primaryKey(),
 	name: text('name').notNull(),
 	about: text('about').notNull(),
 	verified: boolean('verified').notNull().default(false),
@@ -70,7 +81,7 @@ export const organizationsTable = pgTable('organizations', {
 export const membersTable = pgTable(
 	'members',
 	{
-		memberId: serial('member_id').primaryKey(),
+		memberId: identity('member_id').notNull().primaryKey(),
 		userId: integer('user_id')
 			.notNull()
 			.references(() => usersTable.userId),
@@ -103,7 +114,7 @@ export const memberRolesTable = pgTable(
 export const eventsTable = pgTable(
 	'events',
 	{
-		eventId: serial('event_id').primaryKey(),
+		eventId: identity('event_id').notNull().primaryKey(),
 		organizationId: integer('organization_id').references(() => organizationsTable.organizationId),
 		userId: integer('user_id').references(() => usersTable.userId),
 		name: text('name').notNull(),
@@ -125,7 +136,7 @@ export const eventsTable = pgTable(
 export const categoriesTable = pgTable(
 	'categories',
 	{
-		categoryId: serial('category_id').primaryKey(),
+		categoryId: identity('category_id').notNull().primaryKey(),
 		name: text('name').notNull()
 	},
 	(categories) => ({
@@ -134,7 +145,7 @@ export const categoriesTable = pgTable(
 );
 
 export const subEventsTable = pgTable('sub_events', {
-	subEventId: serial('sub_event_id').primaryKey(),
+	subEventId: identity('sub_event_id').notNull().primaryKey(),
 	eventId: integer('event_id')
 		.notNull()
 		.references(() => eventsTable.eventId),
@@ -149,7 +160,7 @@ export const subEventsTable = pgTable('sub_events', {
 export const userCredentialsTable = pgTable(
 	'user_credentials',
 	{
-		userId: serial('user_id').primaryKey(),
+		userId: identity('user_id').notNull().primaryKey(),
 		mobile: text('mobile').notNull(),
 		email: text('email').notNull(),
 		password: text('password').notNull()
