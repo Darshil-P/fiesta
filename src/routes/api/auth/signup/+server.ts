@@ -4,12 +4,12 @@ import { NAME_REGEX, PASSWORD_REGEX, PHONE_REGEX } from '$lib/server/regex';
 import { userCredentialsTable, usersTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import bcrypt from 'bcryptjs';
-import type { InferModel } from 'drizzle-orm';
+import type { InferInsertModel } from 'drizzle-orm';
 import joi from 'joi';
 
 export const POST = (async ({ request }) => {
-	type NewUser = Omit<InferModel<typeof usersTable, 'insert'>, 'dateCreated'>;
-	type NewUserCredential = Omit<InferModel<typeof userCredentialsTable, 'insert'>, 'userId'>;
+	type NewUser = InferInsertModel<typeof usersTable>;
+	type NewUserCredential = InferInsertModel<typeof userCredentialsTable>;
 	const requestBody = await request.json();
 
 	const requestSchema = joi.object({
