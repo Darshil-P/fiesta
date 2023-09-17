@@ -26,7 +26,7 @@ export const GET = (async ({ params }) => {
 		.where(eq(organizationMembersTable.userId, userId));
 
 	if (organizations.length == 0) {
-		throw error(404, 'Events Not Found');
+		throw error(404, 'Organizations Not Found');
 	}
 
 	const userEvents = organizations.map((organization) => {

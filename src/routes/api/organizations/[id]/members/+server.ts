@@ -38,7 +38,7 @@ export const GET = (async ({ params }) => {
 		.groupBy(membersTable.memberId, usersTable.userId);
 
 	if (members.length == 0) {
-		throw error(404, 'Organization Not Found');
+		throw error(404, 'Members Not Found');
 	}
 
 	const organizationMembers = members.map((member) => {
