@@ -5,7 +5,8 @@ export const handleError: HandleServerError = ({ error: err }) => {
 		if (err.message.includes('duplicate')) {
 			throw error(409, err.message);
 		}
-		if (err.message.includes('violates')) {
+		if (err.message.includes('violates foreign key constraint')) {
+			console.log(err);
 			throw error(404, 'referring entity (id) does not exist');
 		}
 
