@@ -3,9 +3,11 @@ import {
 	boolean,
 	customType,
 	date,
+	doublePrecision,
 	integer,
 	pgTable,
 	primaryKey,
+	smallint,
 	text,
 	timestamp,
 	unique
@@ -170,6 +172,16 @@ export const userCredentialsTable = pgTable(
 		emailUnique: unique().on(userCredentials.email)
 	})
 );
+
+export const eventTicketsTable = pgTable('event_tickets', {
+	eventId: integer('event_id')
+		.references(() => eventsTable.eventId)
+		.primaryKey(),
+	price: doublePrecision('price').notNull(),
+	type: smallint('type').notNull().default(0),
+	ticketsTotal: integer('tickets_total').notNull(),
+	ticketsAvailable: integer('tickets_available').notNull()
+});
 
 export const organizationMembersTable = pgTable(
 	'organization_members',

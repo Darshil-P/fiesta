@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
-import { eventsTable } from '$lib/server/schema';
+import { eventsTable, eventTicketsTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import type { InferInsertModel } from 'drizzle-orm';
 import { writeFile } from 'fs';
@@ -10,13 +10,15 @@ import shortUUID from 'short-uuid';
 
 export const POST = (async ({ request }) => {
 	type NewEvent = InferInsertModel<typeof eventsTable>;
+	type NewEventTicket = InferInsertModel<typeof eventTicketsTable>;
 	const formData = await request.formData();
-	const requestBody = JSON.parse(formData.get('event') as string);
+	const requestBodyEvent = JSON.parse(formData.get('event') as string);
+	const requestBodyTicket = JSON.parse(formData.get('ticket') as string);
 	const thumbnail = formData.get('thumbnail') as File;
 	const images = formData.getAll('images') as File[];
 	const suuid = shortUUID();
 
-	const requestSchema = joi.object({
+	const requestSchemaEvent = joi.object({
 		name: joi.string().min(3).max(80).required(),
 		description: joi.string().max(4000).required(),
 		startDate: joi.date().min(Date.now()).required(),
@@ -27,16 +29,27 @@ export const POST = (async ({ request }) => {
 		organizationId: joi.number(),
 		terms: joi.string().max(4000)
 	});
+
+	const requestSchemaTicket = joi.object({
+		price: joi.number().required(),
+		ticketsTotal: joi.number().precision(0).required(),
+		ticketsAvailable: joi.number().precision(0).max(joi.ref('ticketsTotal')).required(),
+		type: joi.number().precision(0)
+	});
+
 	const supportedImageTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/avif'];
 
-	if (!requestBody) throw error(400, 'must provide event details');
+	if (!requestBodyEvent) throw error(400, 'must provide event details');
 	if (!thumbnail) throw error(400, 'thumbnail required');
 	if (!supportedImageTypes.includes(thumbnail.type)) throw error(415, 'unsupported image format');
 	if (images.length > 0 && !images.every((image) => supportedImageTypes.includes(image.type))) {
 		throw error(415, 'unsupported image format');
 	}
 
-	const { error: validationError } = requestSchema.validate(requestBody);
+	let { error: validationError } = requestSchemaEvent.validate(requestBodyEvent);
+	if (!validationError && requestBodyTicket) {
+		validationError = requestSchemaTicket.validate(requestBodyTicket).error;
+	}
 
 	if (validationError) {
 		throw error(400, validationError.details[0].message);
@@ -70,12 +83,35 @@ export const POST = (async ({ request }) => {
 		throw error(415, 'unsupported image format');
 	}
 
-	const eventData: NewEvent = requestBody;
+	const eventData: NewEvent = {
+		name: requestBodyEvent.name,
+		description: requestBodyEvent.description,
+		startDate: requestBodyEvent.startDate,
+		endDate: requestBodyEvent.endDate,
+		status: requestBodyEvent.status,
+		category: requestBodyEvent.category,
+		thumbnailId: thumbnailId,
+		eventId: requestBodyEvent.eventId,
+		organizationId: requestBodyEvent.organizationId,
+		userId: requestBodyEvent.userId,
+		terms: requestBodyEvent.terms,
+		imageIds: imageIds,
+		videoId: null
+	};
 
-	const newEvent = await db
-		.insert(eventsTable)
-		.values({ ...eventData, thumbnailId: thumbnailId, imageIds: imageIds })
-		.returning();
+	const newEvent = await db.insert(eventsTable).values(eventData).returning();
+
+	if (requestBodyTicket) {
+		const ticketData: NewEventTicket = {
+			eventId: newEvent[0].eventId,
+			price: requestBodyTicket.price,
+			ticketsTotal: requestBodyTicket.ticketsTotal,
+			ticketsAvailable: requestBodyTicket.ticketsAvailable,
+			type: undefined
+		};
+
+		await db.insert(eventTicketsTable).values(ticketData);
+	}
 
 	let writeError;
 	writeFile(
