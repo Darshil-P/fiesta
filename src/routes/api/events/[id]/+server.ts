@@ -4,10 +4,11 @@ import {
 	categoriesTable,
 	eventsTable,
 	organizationsTable,
-	subEventsTable
+	subEventsTable,
+	usersTable
 } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import Joi from 'joi';
 
 export const GET = (async ({ params }) => {
@@ -24,7 +25,17 @@ export const GET = (async ({ params }) => {
 	const events = await db
 		.select()
 		.from(eventsTable)
-		.leftJoin(organizationsTable, eq(eventsTable.organizationId, organizationsTable.organizationId))
+		.leftJoin(
+			organizationsTable,
+			and(
+				eq(eventsTable.ownerType, 'organization'),
+				eq(eventsTable.ownerId, organizationsTable.organizationId)
+			)
+		)
+		.leftJoin(
+			usersTable,
+			and(eq(eventsTable.ownerType, 'user'), eq(eventsTable.ownerId, usersTable.userId))
+		)
 		.where(eq(eventsTable.eventId, eventId));
 
 	const subEvents = await db
@@ -40,6 +51,7 @@ export const GET = (async ({ params }) => {
 	const eventDetails = {
 		...events[0].events,
 		organization: events[0].organizations,
+		user: events[0].users,
 		subEvents: subEvents.map((subEvent) => {
 			return {
 				...subEvent.sub_events,

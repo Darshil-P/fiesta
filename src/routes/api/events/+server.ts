@@ -21,12 +21,12 @@ export const POST = (async ({ request }) => {
 	const requestSchemaEvent = joi.object({
 		name: joi.string().min(3).max(80).required(),
 		description: joi.string().max(4000).required(),
+		ownerId: joi.number().precision(0).required(),
+		ownerType: joi.string().valid('user', 'organization').required(),
 		startDate: joi.date().min(Date.now()).required(),
 		endDate: joi.date().min(joi.ref('startDate')).required(),
 		status: joi.string(),
 		category: joi.string(),
-		userId: joi.number(),
-		organizationId: joi.number(),
 		terms: joi.string().max(4000)
 	});
 
@@ -40,19 +40,17 @@ export const POST = (async ({ request }) => {
 	const supportedImageTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/avif'];
 
 	if (!requestBodyEvent) throw error(400, 'must provide event details');
-	if (!thumbnail) throw error(400, 'thumbnail required');
-	if (!supportedImageTypes.includes(thumbnail.type)) throw error(415, 'unsupported image format');
-	if (images.length > 0 && !images.every((image) => supportedImageTypes.includes(image.type))) {
-		throw error(415, 'unsupported image format');
-	}
-
 	let { error: validationError } = requestSchemaEvent.validate(requestBodyEvent);
 	if (!validationError && requestBodyTicket) {
 		validationError = requestSchemaTicket.validate(requestBodyTicket).error;
 	}
-
 	if (validationError) {
 		throw error(400, validationError.details[0].message);
+	}
+	if (!thumbnail) throw error(400, 'thumbnail required');
+	if (!supportedImageTypes.includes(thumbnail.type)) throw error(415, 'unsupported image format');
+	if (images.length > 0 && !images.every((image) => supportedImageTypes.includes(image.type))) {
+		throw error(415, 'unsupported image format');
 	}
 
 	let processedThumbnail: Buffer;
@@ -92,8 +90,8 @@ export const POST = (async ({ request }) => {
 		category: requestBodyEvent.category,
 		thumbnailId: thumbnailId,
 		eventId: requestBodyEvent.eventId,
-		organizationId: requestBodyEvent.organizationId,
-		userId: requestBodyEvent.userId,
+		ownerId: requestBodyEvent.ownerId,
+		ownerType: requestBodyEvent.ownerType,
 		terms: requestBodyEvent.terms,
 		imageIds: imageIds,
 		videoId: null

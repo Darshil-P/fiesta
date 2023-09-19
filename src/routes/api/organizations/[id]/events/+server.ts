@@ -2,7 +2,7 @@ import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
 import { eventsTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import Joi from 'joi';
 
 export const GET = (async ({ params }) => {
@@ -19,7 +19,7 @@ export const GET = (async ({ params }) => {
 	const events = await db
 		.select()
 		.from(eventsTable)
-    .where(eq(eventsTable.organizationId, organizationId));
+		.where(and(eq(eventsTable.ownerType, 'organization'), eq(eventsTable.ownerId, organizationId)));
 
 	if (events.length == 0) {
 		throw error(404, 'Events Not Found');

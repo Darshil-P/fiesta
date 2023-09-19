@@ -113,27 +113,21 @@ export const memberRolesTable = pgTable(
 	})
 );
 
-export const eventsTable = pgTable(
-	'events',
-	{
-		eventId: identity('event_id').notNull().primaryKey(),
-		organizationId: integer('organization_id').references(() => organizationsTable.organizationId),
-		userId: integer('user_id').references(() => usersTable.userId),
-		name: text('name').notNull(),
-		description: text('description').notNull(),
-		startDate: date('start_date').notNull(),
-		endDate: date('end_date').notNull(),
-		status: text('status').notNull(),
-		category: text('category').notNull(),
-		terms: text('terms'),
-		thumbnailId: text('thumbnail_id').notNull(),
-		imageIds: text('image_ids').array().notNull().default([]),
-		videoId: text('video_id')
-	},
-	(events) => ({
-		organizationIdUniqueIndex: unique().on(events.organizationId)
-	})
-);
+export const eventsTable = pgTable('events', {
+	eventId: identity('event_id').notNull().primaryKey(),
+	ownerId: integer('owner_id').notNull(),
+	ownerType: text('owner_type').notNull().$type<'user' | 'organization'>(),
+	name: text('name').notNull(),
+	description: text('description').notNull(),
+	startDate: date('start_date').notNull(),
+	endDate: date('end_date').notNull(),
+	status: text('status').notNull(),
+	category: text('category').notNull(),
+	terms: text('terms'),
+	thumbnailId: text('thumbnail_id').notNull(),
+	imageIds: text('image_ids').array().notNull().default([]),
+	videoId: text('video_id')
+});
 
 export const categoriesTable = pgTable(
 	'categories',
