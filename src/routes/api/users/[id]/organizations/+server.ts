@@ -2,7 +2,7 @@ import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
 import { organizationMembersTable, organizationsTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import { eq, or } from 'drizzle-orm';
 import Joi from 'joi';
 
 export const GET = (async ({ params }) => {
@@ -19,11 +19,11 @@ export const GET = (async ({ params }) => {
 	const organizations = await db
 		.select({ organizationsTable })
 		.from(organizationsTable)
-		.innerJoin(
+		.leftJoin(
 			organizationMembersTable,
 			eq(organizationMembersTable.organizationId, organizationsTable.organizationId)
 		)
-		.where(eq(organizationMembersTable.userId, userId));
+		.where(or(eq(organizationMembersTable.userId, userId), eq(organizationsTable.ownerId, userId)));
 
 	if (organizations.length == 0) {
 		throw error(404, 'Organizations Not Found');

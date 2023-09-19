@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
-import { organizationsTable, rolesTable } from '$lib/server/schema';
+import { organizationsTable, usersTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import Joi from 'joi';
@@ -16,21 +16,20 @@ export const GET = (async ({ params }) => {
 		throw error(400, validationError.details[0].message);
 	}
 
-	const roles = await db
-		.select({ rolesTable })
+	const organization = await db
+		.select({ organizationsTable, usersTable })
 		.from(organizationsTable)
 		.where(eq(organizationsTable.organizationId, organizationId))
-		.leftJoin(rolesTable, eq(organizationsTable.organizationId, rolesTable.organizationId));
+		.leftJoin(usersTable, eq(usersTable.userId, organizationsTable.ownerId));
 
-	if (roles.length == 0) {
-		throw error(404, 'Roles Not Found');
+	if (organization.length == 0) {
+		throw error(404, 'Organization Not Found');
 	}
 
-	const organizationRoles = roles.map((role) => {
-		return {
-			...role.rolesTable
-		};
-	});
+	const organizationDetails = {
+		...organization[0].organizationsTable,
+		owner: organization[0].usersTable
+	};
 
-	return jsonResponse(JSON.stringify(organizationRoles));
+	return jsonResponse(JSON.stringify(organizationDetails));
 }) satisfies RequestHandler;

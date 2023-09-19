@@ -17,6 +17,7 @@ export const POST = (async ({ request }) => {
 	const suuid = shortUUID();
 
 	const requestSchema = joi.object({
+		ownerId: joi.number().precision(0).required(),
 		name: joi.string().min(3).max(80).required(),
 		about: joi.string().max(4000).required()
 	});
@@ -73,6 +74,7 @@ export const POST = (async ({ request }) => {
 	}
 
 	const organizationData: NewOrganization = {
+		ownerId: requestBody.ownerId,
 		name: requestBody.name,
 		about: requestBody.about,
 		logoId: logoId,

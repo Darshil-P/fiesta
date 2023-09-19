@@ -73,6 +73,9 @@ export const rolePermissionsTable = pgTable(
 
 export const organizationsTable = pgTable('organizations', {
 	organizationId: identity('organization_id').notNull().primaryKey(),
+	ownerId: integer('owner_id')
+		.references(() => usersTable.userId)
+		.notNull(),
 	name: text('name').notNull(),
 	about: text('about').notNull(),
 	verified: boolean('verified').notNull().default(false),
