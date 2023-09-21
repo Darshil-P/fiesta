@@ -13,6 +13,7 @@ const selectOrganizationDetails = db
 		name: organizationsTable.name,
 		about: organizationsTable.about,
 		verified: organizationsTable.verified,
+		dateCreated: organizationsTable.dateCreated,
 		logoId: organizationsTable.logoId,
 		bannerId: organizationsTable.bannerId,
 		owner: {

@@ -79,6 +79,9 @@ export const organizationsTable = pgTable('organizations', {
 	name: text('name').notNull(),
 	about: text('about').notNull(),
 	verified: boolean('verified').notNull().default(false),
+	dateCreated: timestamp('date_created', { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 	logoId: text('logo_id'),
 	bannerId: text('banner_id')
 });
