@@ -1,6 +1,7 @@
+import { fileLocation, supportedImageTypes } from '$lib/server/constants';
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
-import { eventsTable, eventTicketsTable } from '$lib/server/schema';
+import { eventTicketsTable, eventsTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { sql, type InferInsertModel } from 'drizzle-orm';
 import { writeFile } from 'fs';
@@ -10,7 +11,6 @@ import shortUUID from 'short-uuid';
 
 type NewEvent = InferInsertModel<typeof eventsTable>;
 type NewEventTicket = InferInsertModel<typeof eventTicketsTable>;
-const supportedImageTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/avif'];
 const suuid = shortUUID();
 
 const requestSchemaEvent = joi.object({
@@ -149,7 +149,7 @@ export const POST = (async ({ request }) => {
 
 	let writeError;
 	writeFile(
-		`src/lib/uploads/images/events/thumbnail/${thumbnailId}.webp`,
+		`${fileLocation.eventThumbnail}/${thumbnailId}`,
 		processedThumbnail,
 		(err) => (writeError = err)
 	);
@@ -157,7 +157,7 @@ export const POST = (async ({ request }) => {
 
 	processedImages.map((processedImage) => {
 		writeFile(
-			`src/lib/uploads/images/events/pictures/${imageIds.pop()}.webp`,
+			`${fileLocation.eventPictures}/${imageIds.pop()}`,
 			processedImage,
 			(err) => (writeError = err)
 		);

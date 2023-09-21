@@ -1,3 +1,4 @@
+import { fileLocation, supportedImageTypes } from '$lib/server/constants';
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
 import { organizationsTable } from '$lib/server/schema';
@@ -11,7 +12,6 @@ import shortUUID from 'short-uuid';
 type NewOrganization = InferInsertModel<typeof organizationsTable>;
 
 const suuid = shortUUID();
-const supportedImageTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/avif'];
 const requestSchema = joi.object({
 	ownerId: joi.number().precision(0).required(),
 	name: joi.string().min(3).max(80).required(),
@@ -98,7 +98,7 @@ export const POST = (async ({ request }) => {
 		let writeError;
 		processedLogo &&
 			writeFile(
-				`src/lib/uploads/images/organizations/logo/${logoId}.webp`,
+				`${fileLocation.organizationLogo}/${logoId}`,
 				processedLogo,
 				(err) => (writeError = err)
 			);
@@ -106,7 +106,7 @@ export const POST = (async ({ request }) => {
 
 		processedBanner &&
 			writeFile(
-				`src/lib/uploads/images/organizations/banner/${bannerId}.webp`,
+				`${fileLocation.organizationBanner}/${bannerId}`,
 				processedBanner,
 				(err) => (writeError = err)
 			);

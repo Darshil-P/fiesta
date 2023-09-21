@@ -4,7 +4,7 @@ import { promises as fs } from 'fs';
 export const GET = (async ({ params }) => {
 	const path = params.rest;
 	try {
-		const asset = await fs.readFile(`src/lib/uploads/${path}.webp`);
+		const asset = await fs.readFile(`src/lib/uploads/${path}`);
 		return new Response(asset, {
 			headers: {
 				'Content-Type': 'image/webp'
