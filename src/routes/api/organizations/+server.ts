@@ -2,27 +2,39 @@ import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
 import { organizationsTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
-import type { InferInsertModel } from 'drizzle-orm';
+import { sql, type InferInsertModel } from 'drizzle-orm';
 import { writeFile } from 'fs';
 import joi from 'joi';
 import sharp from 'sharp';
 import shortUUID from 'short-uuid';
 
+type NewOrganization = InferInsertModel<typeof organizationsTable>;
+
+const suuid = shortUUID();
+const supportedImageTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/avif'];
+const requestSchema = joi.object({
+	ownerId: joi.number().precision(0).required(),
+	name: joi.string().min(3).max(80).required(),
+	about: joi.string().max(4000).required()
+});
+
+const insertOrganization = db
+	.insert(organizationsTable)
+	.values({
+		name: sql.placeholder('name'),
+		ownerId: sql.placeholder('ownerId'),
+		about: sql.placeholder('about'),
+		logoId: sql.placeholder('logoId'),
+		bannerId: sql.placeholder('bannerId')
+	})
+	.returning()
+	.prepare('insert_organization');
+
 export const POST = (async ({ request }) => {
-	type NewOrganization = InferInsertModel<typeof organizationsTable>;
 	const formData = await request.formData();
 	const requestBody = JSON.parse(formData.get('organization') as string);
 	const logo = formData.get('logo') as File;
 	const banner = formData.get('banner') as File;
-	const suuid = shortUUID();
-
-	const requestSchema = joi.object({
-		ownerId: joi.number().precision(0).required(),
-		name: joi.string().min(3).max(80).required(),
-		about: joi.string().max(4000).required()
-	});
-
-	const supportedImageTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/avif'];
 
 	if (!requestBody) throw error(400, 'must provide organization details');
 	if (
@@ -33,7 +45,6 @@ export const POST = (async ({ request }) => {
 	}
 
 	const { error: validationError } = requestSchema.validate(requestBody);
-
 	if (validationError) {
 		throw error(400, validationError.details[0].message);
 	}
@@ -74,14 +85,14 @@ export const POST = (async ({ request }) => {
 	}
 
 	const organizationData: NewOrganization = {
-		ownerId: requestBody.ownerId,
 		name: requestBody.name,
+		ownerId: requestBody.ownerId,
 		about: requestBody.about,
 		logoId: logoId,
 		bannerId: bannerId
 	};
 
-	const newOrganization = await db.insert(organizationsTable).values(organizationData).returning();
+	const newOrganization = await insertOrganization.execute(organizationData);
 
 	if (logoId || bannerId) {
 		let writeError;

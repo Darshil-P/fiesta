@@ -8,57 +8,93 @@ import {
 	usersTable
 } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import Joi from 'joi';
+
+const requestSchema = Joi.number().required();
+
+const selectEventDetails = db
+	.select({
+		eventId: eventsTable.eventId,
+		ownerId: eventsTable.ownerId,
+		ownerType: eventsTable.ownerType,
+		name: eventsTable.name,
+		description: eventsTable.description,
+		startDate: eventsTable.startDate,
+		endDate: eventsTable.endDate,
+		status: eventsTable.status,
+		category: eventsTable.category,
+		terms: eventsTable.terms,
+		thumbnailId: eventsTable.thumbnailId,
+		imageIds: eventsTable.imageIds,
+		videoId: eventsTable.videoId,
+		organization: {
+			organizationId: organizationsTable.organizationId,
+			name: organizationsTable.name,
+			ownerId: organizationsTable.ownerId,
+			about: organizationsTable.about,
+			verified: organizationsTable.verified,
+			logoId: organizationsTable.logoId,
+			bannerId: organizationsTable.bannerId
+		},
+		user: {
+			userId: usersTable.userId,
+			name: usersTable.name,
+			dateCreated: usersTable.dateCreated,
+			avatarId: usersTable.avatarId
+		}
+	})
+	.from(eventsTable)
+	.where(eq(eventsTable.eventId, sql.placeholder('eventId')))
+	.leftJoin(
+		organizationsTable,
+		and(
+			eq(eventsTable.ownerType, 'organization'),
+			eq(eventsTable.ownerId, organizationsTable.organizationId)
+		)
+	)
+	.leftJoin(
+		usersTable,
+		and(eq(eventsTable.ownerType, 'user'), eq(eventsTable.ownerId, usersTable.userId))
+	)
+	.prepare('select_event_details');
+
+const selectSubEvents = db
+	.select({
+		name: subEventsTable.name,
+		description: subEventsTable.description,
+		subEventId: subEventsTable.subEventId,
+		dateTime: subEventsTable.dateTime,
+		category: {
+			categoryId: categoriesTable.categoryId,
+			name: categoriesTable.name
+		}
+	})
+	.from(subEventsTable)
+	.where(eq(subEventsTable.eventId, sql.placeholder('eventId')))
+	.leftJoin(categoriesTable, eq(categoriesTable.categoryId, subEventsTable.categoryId))
+	.prepare('select_sub_events');
 
 export const GET = (async ({ params }) => {
 	const eventId = Number.parseInt(params.id ?? '');
 
-	const requestSchema = Joi.number().required();
-
 	const { error: validationError } = requestSchema.validate(eventId);
-
 	if (validationError) {
 		throw error(400, validationError.details[0].message);
 	}
 
-	const events = await db
-		.select()
-		.from(eventsTable)
-		.leftJoin(
-			organizationsTable,
-			and(
-				eq(eventsTable.ownerType, 'organization'),
-				eq(eventsTable.ownerId, organizationsTable.organizationId)
-			)
-		)
-		.leftJoin(
-			usersTable,
-			and(eq(eventsTable.ownerType, 'user'), eq(eventsTable.ownerId, usersTable.userId))
-		)
-		.where(eq(eventsTable.eventId, eventId));
+	const eventDetails = await selectEventDetails.execute({ eventId });
 
-	const subEvents = await db
-		.select()
-		.from(subEventsTable)
-		.innerJoin(categoriesTable, eq(subEventsTable.categoryId, categoriesTable.categoryId))
-		.where(eq(subEventsTable.eventId, eventId));
-
-	if (events.length == 0) {
+	if (eventDetails.length == 0) {
 		throw error(404, 'Event Not Found');
 	}
 
-	const eventDetails = {
-		...events[0].events,
-		organization: events[0].organizations,
-		user: events[0].users,
-		subEvents: subEvents.map((subEvent) => {
-			return {
-				...subEvent.sub_events,
-				category: subEvent.categories
-			};
-		})
+	const subEvents = await selectSubEvents.execute({ eventId });
+
+	const response = {
+		...eventDetails[0],
+		subEvents: subEvents
 	};
 
-	return jsonResponse(JSON.stringify(eventDetails));
+	return jsonResponse(JSON.stringify(response));
 }) satisfies RequestHandler;

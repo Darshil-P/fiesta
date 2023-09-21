@@ -4,37 +4,40 @@ import { PASSWORD_REGEX } from '$lib/server/regex';
 import { userCredentialsTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import bcrypt from 'bcryptjs';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import joi from 'joi';
+
+const requestSchema = joi.object({
+	email: joi.string().email().required(),
+	password: joi.string().regex(PASSWORD_REGEX).required()
+});
+
+const selectUsersCredentials = db
+	.select({ password: userCredentialsTable.password })
+	.from(userCredentialsTable)
+	.where(
+		sql.placeholder('email')
+			? eq(userCredentialsTable.email, sql.placeholder('email'))
+			: eq(userCredentialsTable.mobile, sql.placeholder('mobile'))
+	)
+	.prepare('select_user_credentials');
 
 export const POST = (async ({ request }) => {
 	const requestBody = await request.json();
 
-	const requestSchema = joi.object({
-		email: joi.string().email().required(),
-		password: joi.string().regex(PASSWORD_REGEX).required()
-	});
-
 	const { error: validationError } = requestSchema.validate(requestBody);
-
 	if (validationError) {
 		throw error(400, validationError.details[0].message);
 	}
 
-	const userCredentials = await db
-		.select({ password: userCredentialsTable.password })
-		.from(userCredentialsTable)
-		.where(
-			requestBody.email
-				? eq(userCredentialsTable.email, requestBody.email)
-				: eq(userCredentialsTable.mobile, requestBody.mobile)
-		);
+	const { email, password } = requestBody;
+	const userCredentials = await selectUsersCredentials.execute({ email, password });
 
 	if (userCredentials.length == 0) {
 		throw error(404, 'Email or Mobile not Registered');
 	}
 
-	const validPass = await bcrypt.compare(requestBody.password, userCredentials[0].password);
+	const validPass = await bcrypt.compare(password, userCredentials[0].password);
 
 	if (!validPass) {
 		throw error(401, 'Incorrect Password');

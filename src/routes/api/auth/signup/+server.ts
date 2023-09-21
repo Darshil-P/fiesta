@@ -4,40 +4,61 @@ import { NAME_REGEX, PASSWORD_REGEX, PHONE_REGEX } from '$lib/server/regex';
 import { userCredentialsTable, usersTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import bcrypt from 'bcryptjs';
-import type { InferInsertModel } from 'drizzle-orm';
+import { sql, type InferInsertModel } from 'drizzle-orm';
 import joi from 'joi';
 
+type NewUser = InferInsertModel<typeof usersTable>;
+type NewUserCredential = InferInsertModel<typeof userCredentialsTable>;
+
+const requestSchema = joi.object({
+	name: joi.string().regex(NAME_REGEX).required(),
+	email: joi.string().email().required(),
+	mobile: joi.string().regex(PHONE_REGEX).required(),
+	password: joi.string().regex(PASSWORD_REGEX).required()
+});
+
+const insertUserCredentials = db
+	.insert(userCredentialsTable)
+	.values({
+		mobile: sql.placeholder('mobile'),
+		email: sql.placeholder('email'),
+		password: sql.placeholder('password')
+	})
+	.returning()
+	.prepare('insert_user_credentials');
+
+const insertUser = db
+	.insert(usersTable)
+	.values({
+		userId: sql.placeholder('userId'),
+		name: sql.placeholder('name')
+	})
+	.returning()
+	.prepare('insert_user');
+
 export const POST = (async ({ request }) => {
-	type NewUser = InferInsertModel<typeof usersTable>;
-	type NewUserCredential = InferInsertModel<typeof userCredentialsTable>;
 	const requestBody = await request.json();
 
-	const requestSchema = joi.object({
-		name: joi.string().regex(NAME_REGEX).required(),
-		email: joi.string().email().required(),
-		mobile: joi.string().regex(PHONE_REGEX).required(),
-		password: joi.string().regex(PASSWORD_REGEX).required()
-	});
-
 	const { error: validationError } = requestSchema.validate(requestBody);
-
 	if (validationError) {
 		throw error(400, validationError.details[0].message);
 	}
 
-	requestBody.password = await bcrypt.hash(requestBody.password, 12);
+	const { name, email, mobile, password: passwordText } = requestBody;
+	const password = await bcrypt.hash(passwordText, 12);
 
-	const newUserCredential: NewUserCredential = requestBody;
-	const newUser: NewUser = requestBody;
+	const newUserCredential: NewUserCredential = {
+		mobile,
+		email,
+		password
+	};
+	const userCredentials = await insertUserCredentials.execute(newUserCredential);
 
-	const userCredentials = await db
-		.insert(userCredentialsTable)
-		.values(newUserCredential)
-		.returning();
-
-	newUser.userId = userCredentials[0].userId;
-
-	const users = await db.insert(usersTable).values(newUser).returning();
+	const newUser: NewUser = {
+		userId: userCredentials[0].userId,
+		name
+	};
+	const users = await insertUser.execute(newUser);
 
 	return jsonResponse(JSON.stringify(users[0]), 201);
 }) satisfies RequestHandler;
