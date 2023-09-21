@@ -2,11 +2,12 @@ version: "3.8"
 services:
   server-dev:
     container_name: fiesta_dev_server
+    restart: always
+    ports:
+      - '80:5173'
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - '80:5173'
     volumes:
       - .:/app
       - data:/app/src/lib/uploads
