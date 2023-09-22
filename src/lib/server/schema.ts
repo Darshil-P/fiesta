@@ -221,3 +221,47 @@ export const eventMembersTable = pgTable(
 		eventMemberUnique: unique().on(eventMembers.memberId)
 	})
 );
+
+export const eventInvitesTable = pgTable(
+	'event_invites',
+	{
+		invitationId: integer('invitation_id')
+			.notNull()
+			.references(() => invitationsTable.invitationId),
+		eventId: integer('event_id')
+			.notNull()
+			.references(() => eventsTable.eventId)
+	},
+	(eventInvites) => ({
+		eventInvitesPrimaryKey: primaryKey(eventInvites.invitationId, eventInvites.eventId)
+	})
+);
+
+export const invitationsTable = pgTable('invitations', {
+	invitationId: identity('invitation_id').notNull().primaryKey(),
+	userId: integer('user_id')
+		.notNull()
+		.references(() => usersTable.userId),
+	inviter: integer('inviter')
+		.notNull()
+		.references(() => usersTable.userId),
+	status: text('status').notNull().default('pending')
+});
+
+export const organizationInvitesTable = pgTable(
+	'organization_invites',
+	{
+		invitationId: integer('invitation_id')
+			.notNull()
+			.references(() => invitationsTable.invitationId),
+		organizationId: integer('organization_id')
+			.notNull()
+			.references(() => organizationsTable.organizationId)
+	},
+	(organizationInvites) => ({
+		organizationInvitesPrimaryKey: primaryKey(
+			organizationInvites.invitationId,
+			organizationInvites.organizationId
+		)
+	})
+);
