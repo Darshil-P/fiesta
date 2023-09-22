@@ -27,8 +27,6 @@ export function generateTokens(payload: object) {
 }
 
 export function refreshTokens(accessToken: string, refreshToken: string) {
-	let payload;
-
 	const oldAccessToken = jwt.verify(accessToken, JWT_SECRET, {
 		ignoreExpiration: true
 	}) as JwtPayload;
@@ -42,7 +40,7 @@ export function refreshTokens(accessToken: string, refreshToken: string) {
 	tokenStore.splice(index, 1);
 	console.log(tokenStore);
 
-	return generateTokens(payload ?? {});
+	return generateTokens({ userId: oldAccessToken.userId } ?? {});
 }
 
 export function verifyAccessToken(accessToken: string): number {
