@@ -6,3 +6,5 @@ export const fileLocation = {
 	organizationBanner: 'src/lib/uploads/images/organizations/banner',
 	userAvatar: 'src/lib/uploads/images/avatar'
 };
+
+export const protectedRoutes = [];
