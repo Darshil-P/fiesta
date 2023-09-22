@@ -28,23 +28,19 @@ export function generateTokens(payload: object) {
 
 export function refreshTokens(accessToken: string, refreshToken: string) {
 	let payload;
-	try {
-		const oldAccessToken = jwt.verify(accessToken, JWT_SECRET, {
-			ignoreExpiration: true
-		}) as JwtPayload;
-		const oldRefreshToken = jwt.verify(refreshToken, JWT_SECRET, {
-			ignoreExpiration: true
-		}) as JwtPayload;
 
-		if (!tokenStore.includes(refreshToken) || oldAccessToken.jti != oldRefreshToken.jti) {
-			throw undefined;
-		}
-	} catch (e) {
-		throw 'invalid tokens';
+	const oldAccessToken = jwt.verify(accessToken, JWT_SECRET, {
+		ignoreExpiration: true
+	}) as JwtPayload;
+	const oldRefreshToken = jwt.verify(refreshToken, JWT_SECRET) as JwtPayload;
+
+	if (!tokenStore.includes(refreshToken) || oldAccessToken.jti != oldRefreshToken.jti) {
+		throw 'invalid token';
 	}
 
 	const index = tokenStore.indexOf(refreshToken);
 	tokenStore.splice(index, 1);
+	console.log(tokenStore);
 
 	return generateTokens(payload ?? {});
 }

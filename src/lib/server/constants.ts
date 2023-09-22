@@ -7,4 +7,10 @@ export const fileLocation = {
 	userAvatar: 'src/lib/uploads/images/avatar'
 };
 
-export const protectedRoutes = [];
+export const protectedRoutes = [
+	'/api/events',
+	'/api/organizations',
+	'/api/users/[id]/events',
+	'/api/users/[id]/organizations',
+	'/api/users/[id]/profile'
+];

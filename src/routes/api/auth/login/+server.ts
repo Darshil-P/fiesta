@@ -1,5 +1,6 @@
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
+import { generateTokens } from '$lib/server/jwt';
 import { PASSWORD_REGEX } from '$lib/server/regex';
 import { userCredentialsTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
@@ -13,7 +14,7 @@ const requestSchema = joi.object({
 });
 
 const selectUsersCredentials = db
-	.select({ password: userCredentialsTable.password })
+	.select({ userId: userCredentialsTable.userId, password: userCredentialsTable.password })
 	.from(userCredentialsTable)
 	.where(
 		sql.placeholder('email')
@@ -22,7 +23,7 @@ const selectUsersCredentials = db
 	)
 	.prepare('select_user_credentials');
 
-export const POST = (async ({ request }) => {
+export const POST = (async ({ request, cookies }) => {
 	const requestBody = await request.json();
 
 	const { error: validationError } = requestSchema.validate(requestBody);
@@ -42,6 +43,11 @@ export const POST = (async ({ request }) => {
 	if (!validPass) {
 		throw error(401, 'Incorrect Password');
 	}
+
+	const { accessToken, refreshToken } = generateTokens({ userId: userCredentials[0].userId });
+
+	cookies.set('access_token', accessToken, { path: '/' });
+	cookies.set('refresh_token', refreshToken, { path: '/' });
 
 	return jsonResponse(JSON.stringify('User Authorized'));
 }) satisfies RequestHandler;
