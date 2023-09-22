@@ -11,6 +11,7 @@ export const protectedRoutes = [
 	'/api/events',
 	'/api/organizations',
 	'/api/events/[id]/invite',
+	'/api/organizations/[id]/invite',
 	'/api/users/[id]/events',
 	'/api/users/[id]/organizations',
 	'/api/users/[id]/profile'
