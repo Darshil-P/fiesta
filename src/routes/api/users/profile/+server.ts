@@ -12,7 +12,6 @@ const selectUserProfile = db
 
 export const GET = (async ({ locals }) => {
 	const userId = locals.userId;
-	console.log(userId);
 
 	const users = await selectUserProfile.execute({ userId });
 
