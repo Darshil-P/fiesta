@@ -10,7 +10,7 @@ import {
 } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 
-import { eq, sql, type InferInsertModel } from 'drizzle-orm';
+import { and, eq, sql, type InferInsertModel } from 'drizzle-orm';
 import joi from 'joi';
 
 type NewMember = InferInsertModel<typeof membersTable>;
@@ -29,7 +29,12 @@ const selectUserInvitations = db
 		organizationId: organizationInvitesTable.organizationId
 	})
 	.from(invitationsTable)
-	.where(eq(invitationsTable.invitationId, sql.placeholder('invitationId')))
+	.where(
+		and(
+			eq(invitationsTable.invitationId, sql.placeholder('invitationId')),
+			eq(invitationsTable.userId, sql.placeholder('userId'))
+		)
+	)
 	.leftJoin(eventInvitesTable, eq(eventInvitesTable.invitationId, invitationsTable.invitationId))
 	.leftJoin(
 		organizationInvitesTable,
@@ -96,7 +101,7 @@ export const POST = (async ({ locals, params }) => {
 		throw error(400, validationError.details[0].message);
 	}
 
-	const userInvites = await selectUserInvitations.execute({ invitationId });
+	const userInvites = await selectUserInvitations.execute({ invitationId, userId });
 
 	if (userInvites.length == 0) throw error(404, 'Invitation not found');
 
