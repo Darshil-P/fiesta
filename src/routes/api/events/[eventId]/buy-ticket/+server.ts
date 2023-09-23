@@ -78,7 +78,7 @@ const setEventStatusSold = db
 
 export const POST = (async ({ request, params, locals }) => {
 	const userId = locals.userId;
-	const eventId = Number.parseInt(params.id ?? '');
+	const eventId = Number.parseInt(params.eventId ?? '');
 	const requestBody = await request.json();
 
 	const { error: validationError } = requestSchema.validate({ eventId, ...requestBody });

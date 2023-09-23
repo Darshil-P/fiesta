@@ -10,14 +10,14 @@ export const fileLocation = {
 export const protectedRoutes = [
 	'/api/auth/logout',
 	'/api/events',
-	'/api/events/[id]/buy-ticket',
-	'/api/events/[id]/invite',
+	'/api/events/[eventId]/buy-ticket',
+	'/api/events/[eventId]/invite',
 	'/api/organizations',
-	'/api/organizations/[id]/invite',
+	'/api/organizations/[organizationId]/invite',
 	'/api/users/events',
 	'/api/users/invitations',
-	'/api/users/invitations/[id]/accept',
-	'/api/users/invitations/[id]/reject',
+	'/api/users/invitations/[invitationId]/accept',
+	'/api/users/invitations/[invitationId]/reject',
 	'/api/users/organizations',
 	'/api/users/profile'
 ];

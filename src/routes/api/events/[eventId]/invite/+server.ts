@@ -1,20 +1,16 @@
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
-import {
-	invitationsTable,
-	organizationInvitesTable,
-	userCredentialsTable
-} from '$lib/server/schema';
+import { eventInvitesTable, invitationsTable, userCredentialsTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 
 import { eq, sql, type InferInsertModel } from 'drizzle-orm';
 import joi from 'joi';
 
 type NewInvitation = InferInsertModel<typeof invitationsTable>;
-type NewOrganizationInvite = InferInsertModel<typeof organizationInvitesTable>;
+type NewEventInvite = InferInsertModel<typeof eventInvitesTable>;
 
 const requestSchema = joi.object({
-	organizationId: joi.number().precision(0).required(),
+	eventId: joi.number().precision(0).required(),
 	email: joi.string().email().required()
 });
 
@@ -35,20 +31,20 @@ const insertInvitation = db
 	.returning()
 	.prepare('insert_invitation');
 
-const insertOrganizationInvite = db
-	.insert(organizationInvitesTable)
+const insertEventInvite = db
+	.insert(eventInvitesTable)
 	.values({
 		invitationId: sql.placeholder('invitationId'),
-		organizationId: sql.placeholder('organizationId')
+		eventId: sql.placeholder('eventId')
 	})
-	.prepare('insert_organization_invite');
+	.prepare('insert_event_invite');
 
 export const POST = (async ({ request, locals, params }) => {
 	const requestBody = await request.json();
-	const organizationId = Number.parseInt(params.id ?? '');
+	const eventId = Number.parseInt(params.eventId ?? '');
 	const inviter = locals.userId;
 
-	const { error: validationError } = requestSchema.validate({ organizationId, ...requestBody });
+	const { error: validationError } = requestSchema.validate({ eventId, ...requestBody });
 	if (validationError) {
 		throw error(400, validationError.details[0].message);
 	}
@@ -71,11 +67,11 @@ export const POST = (async ({ request, locals, params }) => {
 	};
 	const invitation = await insertInvitation.execute(newInvitation);
 
-	const newOrganizationInvite: NewOrganizationInvite = {
+	const newEventInvite: NewEventInvite = {
 		invitationId: invitation[0].invitationId,
-		organizationId: organizationId
+		eventId: eventId
 	};
-	await insertOrganizationInvite.execute(newOrganizationInvite);
+	await insertEventInvite.execute(newEventInvite);
 
 	return jsonResponse(JSON.stringify('Invitation Sent'), 201);
 }) satisfies RequestHandler;

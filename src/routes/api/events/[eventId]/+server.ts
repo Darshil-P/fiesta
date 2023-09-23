@@ -11,7 +11,7 @@ import { error, type RequestHandler } from '@sveltejs/kit';
 import { and, eq, sql } from 'drizzle-orm';
 import Joi from 'joi';
 
-const requestSchema = Joi.number().required();
+const requestSchema = Joi.number().precision(0).required();
 
 const selectEventDetails = db
 	.select({
@@ -76,7 +76,7 @@ const selectSubEvents = db
 	.prepare('select_sub_events');
 
 export const GET = (async ({ params }) => {
-	const eventId = Number.parseInt(params.id ?? '');
+	const eventId = Number.parseInt(params.eventId ?? '');
 
 	const { error: validationError } = requestSchema.validate(eventId);
 	if (validationError) {

@@ -5,7 +5,7 @@ import { error, type RequestHandler } from '@sveltejs/kit';
 import { eq, sql } from 'drizzle-orm';
 import Joi from 'joi';
 
-const requestSchema = Joi.number().required();
+const requestSchema = Joi.number().precision(0).required();
 
 const selectOrganizationMembers = db
 	.select({
@@ -21,7 +21,7 @@ const selectOrganizationMembers = db
 	.prepare('select_organization_members');
 
 export const GET = (async ({ params }) => {
-	const organizationId = Number.parseInt(params.id ?? '');
+	const organizationId = Number.parseInt(params.organizationId ?? '');
 
 	const { error: validationError } = requestSchema.validate(organizationId);
 	if (validationError) {

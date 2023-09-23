@@ -32,7 +32,7 @@ const setInvitationStatusRejected = db
 	.prepare('set_invitation_status_rejected');
 
 export const POST = (async ({ locals, params }) => {
-	const invitationId = Number.parseInt(params.id ?? '');
+	const invitationId = Number.parseInt(params.invitationId ?? '');
 	const userId = locals.userId;
 
 	const { error: validationError } = requestSchema.validate(invitationId);
