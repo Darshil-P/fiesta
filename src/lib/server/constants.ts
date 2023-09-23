@@ -10,6 +10,7 @@ export const fileLocation = {
 export const protectedRoutes = [
 	'/api/auth/logout',
 	'/api/events',
+	'/api/events/[id]/buy-ticket',
 	'/api/events/[id]/invite',
 	'/api/organizations',
 	'/api/organizations/[id]/invite',

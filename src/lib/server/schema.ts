@@ -35,6 +35,31 @@ export const usersTable = pgTable('users', {
 	avatarId: text('avatar_id')
 });
 
+export const ticketsTable = pgTable('tickets', {
+	ticketId: identity('ticket_id').notNull().primaryKey(),
+	userId: integer('user_id')
+		.notNull()
+		.references(() => usersTable.userId),
+	eventId: integer('event_id')
+		.notNull()
+		.references(() => eventsTable.eventId),
+	transactionId: integer('transaction_id')
+		.notNull()
+		.unique()
+		.references(() => transactionsTable.transactionId),
+	subEventIds: integer('sub_event_ids').array().default([]),
+	status: text('status').notNull()
+});
+
+export const transactionsTable = pgTable('transactions', {
+	transactionId: identity('transaction_id').notNull().primaryKey(),
+	amount: doublePrecision('amount').notNull(),
+	timestamp: timestamp('timestamp', { withTimezone: true })
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
+	paymentMethod: text('payment_method').notNull()
+});
+
 export const permissionsTable = pgTable(
 	'permissions',
 	{
