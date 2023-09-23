@@ -33,6 +33,7 @@ export function refreshTokens(accessToken: string, refreshToken: string) {
 	const oldRefreshToken = jwt.verify(refreshToken, JWT_SECRET) as JwtPayload;
 
 	if (!tokenStore.includes(refreshToken) || oldAccessToken.jti != oldRefreshToken.jti) {
+		console.log(tokenStore);
 		throw 'invalid token';
 	}
 
