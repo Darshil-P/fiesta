@@ -1,13 +1,6 @@
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
-import {
-	memberRolesTable,
-	membersTable,
-	organizationMembersTable,
-	organizationsTable,
-	rolesTable,
-	usersTable
-} from '$lib/server/schema';
+import { membersTable, organizationMembersTable, usersTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { eq, sql } from 'drizzle-orm';
 import Joi from 'joi';
@@ -15,18 +8,16 @@ import Joi from 'joi';
 const requestSchema = Joi.number().required();
 
 const selectOrganizationMembers = db
-	.select({ membersTable, usersTable, roles: sql`json_agg(roles)` })
-	.from(organizationsTable)
-	.rightJoin(
-		organizationMembersTable,
-		eq(organizationsTable.organizationId, organizationMembersTable.organizationId)
-	)
-	.where(eq(organizationsTable.organizationId, sql.placeholder('organizationId')))
-	.innerJoin(membersTable, eq(membersTable.memberId, organizationMembersTable.memberId))
-	.innerJoin(usersTable, eq(usersTable.userId, membersTable.userId))
-	.leftJoin(memberRolesTable, eq(memberRolesTable.memberId, membersTable.memberId))
-	.innerJoin(rolesTable, eq(rolesTable.roleId, memberRolesTable.roleId))
-	.groupBy(membersTable.memberId, usersTable.userId)
+	.select({
+		memberId: membersTable.memberId,
+		userId: usersTable.userId,
+		name: usersTable.name,
+		avatarId: usersTable.avatarId
+	})
+	.from(organizationMembersTable)
+	.where(eq(organizationMembersTable.organizationId, sql.placeholder('organizationId')))
+	.leftJoin(membersTable, eq(membersTable.memberId, organizationMembersTable.memberId))
+	.leftJoin(usersTable, eq(usersTable.userId, membersTable.userId))
 	.prepare('select_organization_members');
 
 export const GET = (async ({ params }) => {
@@ -43,13 +34,5 @@ export const GET = (async ({ params }) => {
 		throw error(404, 'Members Not Found');
 	}
 
-	const response = organizationMembers.map((member) => {
-		return {
-			...member.membersTable,
-			...member.usersTable,
-			roles: member.roles
-		};
-	});
-
-	return jsonResponse(JSON.stringify(response));
+	return jsonResponse(JSON.stringify(organizationMembers));
 }) satisfies RequestHandler;
