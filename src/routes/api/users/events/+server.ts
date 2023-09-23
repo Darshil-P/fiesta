@@ -3,9 +3,6 @@ import { jsonResponse } from '$lib/server/helper';
 import { eventMembersTable, eventsTable, organizationsTable, usersTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { and, eq, or, sql } from 'drizzle-orm';
-import Joi from 'joi';
-
-const requestSchema = Joi.number().required();
 
 const selectUserEvents = db
 	.select({
@@ -37,7 +34,7 @@ const selectUserEvents = db
 	)
 	.leftJoin(
 		usersTable,
-		and(eq(eventsTable.ownerType, 'user'), eq(eventsTable.ownerId, sql.placeholder('userId')))
+		and(eq(eventsTable.ownerType, 'user'), eq(eventsTable.ownerId, usersTable.userId))
 	)
 	.leftJoin(
 		organizationsTable,
@@ -54,13 +51,8 @@ const selectUserEvents = db
 	)
 	.prepare('select_user_events');
 
-export const GET = (async ({ params }) => {
-	const userId = Number.parseInt(params.id ?? '');
-
-	const { error: validationError } = requestSchema.validate(userId);
-	if (validationError) {
-		throw error(400, validationError.details[0].message);
-	}
+export const GET = (async ({ locals }) => {
+	const userId = locals.userId;
 
 	const userEvents = await selectUserEvents.execute({ userId });
 

@@ -3,9 +3,6 @@ import { jsonResponse } from '$lib/server/helper';
 import { usersTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { eq, sql } from 'drizzle-orm';
-import Joi from 'joi';
-
-const requestSchema = Joi.number().required();
 
 const selectUserProfile = db
 	.select()
@@ -13,13 +10,9 @@ const selectUserProfile = db
 	.where(eq(usersTable.userId, sql.placeholder('userId')))
 	.prepare('select_user_profile');
 
-export const GET = (async ({ params }) => {
-	const userId = Number.parseInt(params.id ?? '');
-
-	const { error: validationError } = requestSchema.validate(userId);
-	if (validationError) {
-		throw error(400, validationError.details[0].message);
-	}
+export const GET = (async ({ locals }) => {
+	const userId = locals.userId;
+	console.log(userId);
 
 	const users = await selectUserProfile.execute({ userId });
 

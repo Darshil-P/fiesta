@@ -9,13 +9,13 @@ export const fileLocation = {
 
 export const protectedRoutes = [
 	'/api/events',
-	'/api/organizations',
 	'/api/events/[id]/invite',
+	'/api/organizations',
 	'/api/organizations/[id]/invite',
-	'/api/users/[id]/events',
+	'/api/users/events',
 	'/api/users/invitations',
 	'/api/users/invitations/[id]/accept',
 	'/api/users/invitations/[id]/reject',
-	'/api/users/[id]/organizations',
-	'/api/users/[id]/profile'
+	'/api/users/organizations',
+	'/api/users/profile'
 ];
