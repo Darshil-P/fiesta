@@ -42,7 +42,7 @@
 						Category: {eventDetails.category}
 					</p>
 					<p class="line-clamp-2 w-56 overflow-ellipsis break-words">
-						Venue: {eventDetails.venue}dddddddd ddddddddd dddddddd d ddddddd d
+						Venue: {eventDetails.venue}
 					</p>
 					<p class=" text-xl">
 						{#if eventDetails.ticketPrice ?? -1 >= 0}
@@ -54,10 +54,10 @@
 			<iframe
 				title="location"
 				class="mt-4 w-full rounded-xl"
-				src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1884.3372105404335!2d72.83561141078123!3d19.1657237872348!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b7ea09014a99%3A0x10bf2f18ae42adc8!2sSethia%20Sea-View!5e0!3m2!1sen!2sin!4v1695562277871!5m2!1sen!2sin"
+				src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d60321.73829590083!2d72.77151233125002!3d19.102889200000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c856a7d54355%3A0xd8481ebbaccd8149!2sSVKM&#39;s%20Mithibai%20College%20of%20Arts!5e0!3m2!1sen!2sin!4v1695580494653!5m2!1sen!2sin"
 				height="128"
 				loading="lazy"
-			></iframe>
+			/>
 			<footer class="mt-4">
 				<button class="variant-filled-primary btn w-full font-bold">Get Your Pass!</button>
 			</footer>
