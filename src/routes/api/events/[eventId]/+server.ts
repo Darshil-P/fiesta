@@ -72,7 +72,8 @@ const selectSubEvents = db
 		category: {
 			categoryId: categoriesTable.categoryId,
 			name: categoriesTable.name
-		}
+		},
+		venue: subEventsTable.venue
 	})
 	.from(subEventsTable)
 	.where(eq(subEventsTable.eventId, sql.placeholder('eventId')))

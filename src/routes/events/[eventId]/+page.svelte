@@ -1,4 +1,5 @@
 <script lang="ts">
+	import SubEventCard from '$lib/components/SubEventCard.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -17,6 +18,17 @@
 		<p>
 			{data.eventDetails.description}
 		</p>
+		<div>
+			{#each data.eventDetails.subEvents as subEvent}
+				<SubEventCard
+					name={subEvent.name}
+					description={subEvent.description}
+					datetime={new Date(subEvent.dateTime)}
+					category={subEvent.category?.name}
+					venue={subEvent.venue}
+				/>
+			{/each}
+		</div>
 		<p class="mt-4 py-2 text-xl font-bold">Terms & Conditions</p>
 		<p>
 			{data.eventDetails.terms}

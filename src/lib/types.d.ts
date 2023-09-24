@@ -51,4 +51,17 @@ export type EventDetails = {
 		dateCreated: Date;
 		avatarId: string | null;
 	} | null;
+	subEvents: Array<SubEvent>;
+};
+
+type SubEvent = {
+	name: string;
+	description: string;
+	subEventId: number;
+	dateTime: Date;
+	category: {
+		name: string;
+		categoryId: number;
+	} | null;
+	venue: string | null;
 };
