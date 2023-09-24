@@ -2,6 +2,7 @@ import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
 import {
 	categoriesTable,
+	eventTicketsTable,
 	eventsTable,
 	organizationsTable,
 	subEventsTable,
@@ -23,6 +24,8 @@ const selectEventDetails = db
 		startDate: eventsTable.startDate,
 		endDate: eventsTable.endDate,
 		status: eventsTable.status,
+		venue: eventsTable.venue,
+		ticketPrice: eventTicketsTable.price,
 		category: eventsTable.category,
 		terms: eventsTable.terms,
 		thumbnailId: eventsTable.thumbnailId,
@@ -57,6 +60,7 @@ const selectEventDetails = db
 		usersTable,
 		and(eq(eventsTable.ownerType, 'user'), eq(eventsTable.ownerId, usersTable.userId))
 	)
+	.leftJoin(eventTicketsTable, eq(eventTicketsTable.eventId, eventsTable.eventId))
 	.prepare('select_event_details');
 
 const selectSubEvents = db
@@ -64,7 +68,7 @@ const selectSubEvents = db
 		name: subEventsTable.name,
 		description: subEventsTable.description,
 		subEventId: subEventsTable.subEventId,
-		dateTime: subEventsTable.dateTime,
+		dateTime: subEventsTable.datetime,
 		category: {
 			categoryId: categoriesTable.categoryId,
 			name: categoriesTable.name

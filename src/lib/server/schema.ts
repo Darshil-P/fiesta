@@ -180,9 +180,10 @@ export const subEventsTable = pgTable('sub_events', {
 	categoryId: integer('category_id')
 		.notNull()
 		.references(() => categoriesTable.categoryId),
-	dateTime: date('datetime').notNull(),
+	datetime: timestamp('datetime', { withTimezone: true }).notNull(),
 	name: text('name').notNull(),
-	description: text('description').notNull()
+	description: text('description').notNull(),
+	venue: text('venue')
 });
 
 export const userCredentialsTable = pgTable(
