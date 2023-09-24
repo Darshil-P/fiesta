@@ -1,4 +1,5 @@
 <script lang="ts">
+	import InfoCard from '$lib/components/InfoCard.svelte';
 	import SubEventCard from '$lib/components/SubEventCard.svelte';
 	import type { PageData } from './$types';
 
@@ -34,7 +35,7 @@
 			{data.eventDetails.terms}
 		</p>
 	</div>
-	<div class="sticky top-0 h-96 max-w-sm justify-self-end">
+	<div class="sticky top-0 h-fit max-w-sm justify-self-end">
 		<div class="card variant-ringed-surface variant-glass mb-2 h-fit max-w-sm rounded-xl p-4">
 			<header>
 				<p class="text-4xl font-semibold">{data.eventDetails.name}</p>
@@ -74,5 +75,13 @@
 				<button class="variant-filled-primary btn w-full font-bold">Get Your Pass!</button>
 			</footer>
 		</div>
+		<p class="mt-4 py-2 text-xl font-bold">Organizer</p>
+		<InfoCard
+			title={eventDetails.organization?.name ?? eventDetails.user?.name ?? ''}
+			verified={eventDetails.organization?.verified ?? false}
+			imageUrl={eventDetails.organization
+				? `/uploads/images/organizations/logo/${eventDetails.organization?.logoId}.webp`
+				: `/uploads/images/users/avatar/${eventDetails.user?.avatarId}`}
+		></InfoCard>
 	</div>
 </div>

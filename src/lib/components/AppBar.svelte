@@ -10,7 +10,7 @@
 	regionRowMain="max-w-7xl place-self-center"
 >
 	<svelte:fragment slot="lead">
-		<img src="/fiesta.svg" alt="fiesta logo" />
+		<a href="/"><img src="/fiesta.svg" alt="fiesta logo" /></a>
 	</svelte:fragment>
 	<div class="input-group input-group-divider h-12 grid-cols-[auto_1fr_auto]">
 		<input type="text" placeholder="Search" class="w-72 px-4" />

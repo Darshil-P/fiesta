@@ -5,10 +5,10 @@
 	export let verified: boolean;
 </script>
 
-<div class="card min-w-[320px] max-w-[272px] p-4">
+<div class="card variant-ringed-surface variant-glass p-4">
 	<div class="flex flex-row">
 		<Avatar src={imageUrl} width="max-w-[64px]" rounded="rounded-full" />
-		<h4 class="h4 my-auto ml-4 mr-auto h-8 overflow-hidden whitespace-nowrap overflow-ellipsis">
+		<h4 class="h4 my-auto ml-4 mr-auto h-8 overflow-hidden overflow-ellipsis whitespace-nowrap">
 			{title}
 		</h4>
 		{#if verified}
