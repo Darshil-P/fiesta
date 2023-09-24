@@ -22,6 +22,7 @@ const requestSchemaEvent = joi.object({
 	endDate: joi.date().min(joi.ref('startDate')).required(),
 	status: joi.string(),
 	category: joi.string(),
+	venue: joi.string(),
 	terms: joi.string().max(4000)
 });
 
@@ -43,6 +44,7 @@ const insertEvent = db
 		endDate: sql.placeholder('endDate'),
 		status: sql.placeholder('status'),
 		category: sql.placeholder('category'),
+		venue: sql.placeholder('venue'),
 		thumbnailId: sql.placeholder('thumbnailId'),
 		terms: sql.placeholder('terms'),
 		imageIds: sql<string[]>`${sql.placeholder('imageIds')}`,
@@ -124,6 +126,7 @@ export const POST = (async ({ request }) => {
 		endDate: requestBodyEvent.endDate,
 		status: requestBodyEvent.status,
 		category: requestBodyEvent.category,
+		venue: requestBodyEvent.venue,
 		thumbnailId: thumbnailId,
 		eventId: requestBodyEvent.eventId,
 		ownerId: requestBodyEvent.ownerId,

@@ -153,6 +153,7 @@ export const eventsTable = pgTable('events', {
 	startDate: date('start_date').notNull(),
 	endDate: date('end_date').notNull(),
 	status: text('status').notNull(),
+	venue: text('venue').notNull(),
 	category: text('category').notNull(),
 	terms: text('terms'),
 	thumbnailId: text('thumbnail_id').notNull(),
