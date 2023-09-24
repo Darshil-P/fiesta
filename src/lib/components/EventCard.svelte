@@ -1,40 +1,52 @@
 <script lang="ts">
-	export let title: String;
-	export let hostedBy: String;
+	export let title: string;
+	export let hostedBy: string;
+	export let imageUrl: string;
 	export let datetime: Date;
-	export let venue: String;
+	export let category: string;
+	export let venue: string;
 	export let price: number;
 </script>
 
-<div class="card min-w-[20rem] rounded-3xl variant-glass variant-ringed-surface p-px">
+<div
+	class="card variant-ringed-surface variant-glass card-hover m-2 min-w-[20rem] rounded-3xl p-px"
+>
 	<header class="aspect-video">
 		<img
-			src="https://www.lightstalking.com/wp-content/uploads/backlit-beach-color-258109-3-1024x576.jpg"
+			src={imageUrl}
 			alt="event"
-			class="aspect-video rounded-t-[24px]"
+			height="180px"
+			width="320px"
+			class="mb-2 aspect-video rounded-t-[24px]"
 		/>
 	</header>
-	<div class="p-4 space-y-4">
-		<h3 class="h3 font-bold overflow-hidden">{title}</h3>
-		<h6 class="h6 text-neutral-300">Hoster by: {hostedBy}</h6>
-		<div class="flex">
+	<div class="space-y-1 px-4 pb-3">
+		<p class="overflow-hidden text-2xl font-bold">{title}</p>
+		<p class="text-neutral-300">Hosted by: {hostedBy}</p>
+		<div class="flex pt-1">
 			<div
-				class="card bg-gradient-to-br variant-gradient-tertiary-secondary aspect-square w-20 text-center p-1 rounded-xl align-middle my-auto"
+				class="card variant-gradient-tertiary-secondary h-14 min-w-[64px] items-center rounded-xl bg-gradient-to-br text-center"
 			>
-				<h4 class="h4">{datetime.toDateString().substring(4, 7)}</h4>
-				<h2 class="h2">{datetime.getDate()}</h2>
+				<p>{datetime.toDateString().substring(4, 7)}</p>
+				<p class="text-2xl">{datetime.getDate()}</p>
 			</div>
 			<div class="px-6">
-				<h5 class="h5">
-					{datetime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} Onwards
-				</h5>
-				<h5 class="h5">{venue}</h5>
-				<h5 class="h5">₹ : {price > 0 ? price + ' Onwards' : 'Free!'}</h5>
+				<p class="line-clamp-1 w-48 overflow-ellipsis break-words text-sm">
+					Category: {category}
+				</p>
+				<p class="line-clamp-2 w-48 overflow-ellipsis break-words text-sm">
+					Venue: {venue}
+				</p>
 			</div>
 		</div>
 	</div>
 	<hr class="opacity-50" />
-	<footer class="p-4 flex items-center">
-		<button class="btn variant-filled-primary font-bold mx-auto">Get Your Pass!</button>
+	<footer class="flex items-center justify-between p-3">
+		<p class="mx-4 text-xl">
+			{#if price >= 0}
+				₹ : {price == 0 ? 'Free!' : price}
+			{/if}
+		</p>
+		<button class="variant-filled-primary btn btn-sm mx-4 font-bold">Get Your Pass!</button>
 	</footer>
 </div>
