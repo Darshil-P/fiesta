@@ -18,7 +18,9 @@
 	<svelte:fragment slot="header">
 		<AppBar />
 	</svelte:fragment>
-	<slot />
+	<div class="mx-auto min-h-screen max-w-7xl p-4">
+		<slot />
+	</div>
 	<svelte:fragment slot="pageFooter">
 		<Footer />
 	</svelte:fragment>

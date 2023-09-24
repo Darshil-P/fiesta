@@ -1,4 +1,5 @@
 <script lang="ts">
+	export let href: string;
 	export let title: string;
 	export let hostedBy: string;
 	export let imageUrl: string;
@@ -8,7 +9,8 @@
 	export let price: number;
 </script>
 
-<div
+<a
+	{href}
 	class="card variant-ringed-surface variant-glass card-hover m-2 min-w-[20rem] rounded-3xl p-px"
 >
 	<header class="aspect-video">
@@ -49,4 +51,4 @@
 		</p>
 		<button class="variant-filled-primary btn btn-sm mx-4 font-bold">Get Your Pass!</button>
 	</footer>
-</div>
+</a>
