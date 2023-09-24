@@ -1,7 +1,7 @@
 <div class="card">
-	<div class="grid grid-cols-2 max-w-7xl mx-auto px-16 pt-4 h-48">
+	<div class="mx-auto grid h-48 max-w-7xl grid-cols-2 px-16 pt-4">
 		<div>
-			<img src="fiesta.svg" alt="fiesta logo" height="sm" />
+			<img src="/fiesta.svg" alt="fiesta logo" height="sm" />
 			<p>
 				Fiesta is an events platform where anyone can buy and sell event tickets. Users can list
 				their events on the platform which can be discovered by other users. Create an organization
@@ -9,7 +9,7 @@
 			</p>
 		</div>
 		<div class="grid grid-cols-2">
-			<div class="place-self-end mb-auto">
+			<div class="mb-auto place-self-end">
 				<h4 class="h4 font-bold">Organizing Events</h4>
 				<ul>
 					<li>
@@ -26,7 +26,7 @@
 					</li>
 				</ul>
 			</div>
-			<div class="place-self-center mb-auto">
+			<div class="mb-auto place-self-center">
 				<h4 class="h4 font-bold">Get to know us</h4>
 				<ul>
 					<li>
@@ -46,5 +46,5 @@
 		</div>
 	</div>
 	<hr class="opacity-50" />
-	<footer class="text-center p-1">2023 - Fiesta</footer>
+	<footer class="p-1 text-center">2023 - Fiesta</footer>
 </div>
