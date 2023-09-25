@@ -14,7 +14,6 @@
 			? `/uploads/images/organizations/logo/${eventDetails.organization.logoId}`
 			: `/uploads/images/users/avatar/${eventDetails.user?.avatarId}`
 	};
-	console.log(organizer.imageUrl);
 </script>
 
 <div class="grid grid-cols-8 place-content-between gap-12">

@@ -80,3 +80,10 @@ export type OrganizationDetails = {
 		avatarId: string | null;
 	} | null;
 };
+
+export type User = {
+	avatarId: string | null;
+	userId: number;
+	name: string;
+	dateCreated: Date;
+};
