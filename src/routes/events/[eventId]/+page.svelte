@@ -1,20 +1,18 @@
 <script lang="ts">
 	import InfoCard from '$lib/components/InfoCard.svelte';
+	import Slider from '$lib/components/Slider.svelte';
 	import SubEventCard from '$lib/components/SubEventCard.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
 	export const { eventDetails } = data;
-	export const date = new Date(eventDetails.startDate);
+	const date = new Date(eventDetails.startDate);
+	const pictures = eventDetails.imageIds.map((id) => `/uploads/images/events/pictures/${id}`);
 </script>
 
-<div class="grid grid-cols-2 place-content-between gap-8">
-	<div>
-		<img
-			src={`/uploads/images/events/pictures/${data.eventDetails.imageIds[2]}`}
-			alt="event"
-			class="max-w-3xl rounded-3xl"
-		/>
+<div class="grid grid-cols-3 place-content-between gap-48">
+	<div class="col-span-2">
+		<Slider {pictures} />
 		<p class="mt-4 py-2 text-xl font-bold">About</p>
 		<p>
 			{data.eventDetails.description}
