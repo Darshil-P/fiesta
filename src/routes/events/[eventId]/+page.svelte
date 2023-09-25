@@ -8,10 +8,17 @@
 	export const { eventDetails } = data;
 	const date = new Date(eventDetails.startDate);
 	const pictures = eventDetails.imageIds.map((id) => `/uploads/images/events/pictures/${id}`);
+	const organizer = {
+		name: eventDetails.organization?.name ?? eventDetails.user?.name,
+		imageUrl: eventDetails.organization
+			? `/uploads/images/organizations/logo/${eventDetails.organization.logoId}`
+			: `/uploads/images/users/avatar/${eventDetails.user?.avatarId}`
+	};
+	console.log(organizer.imageUrl);
 </script>
 
-<div class="grid grid-cols-3 place-content-between gap-48">
-	<div class="col-span-2">
+<div class="grid grid-cols-8 place-content-between gap-12">
+	<div class="col-span-5">
 		<Slider {pictures} />
 		<p class="mt-4 py-2 text-xl font-bold">About</p>
 		<p>
@@ -33,7 +40,7 @@
 			{data.eventDetails.terms}
 		</p>
 	</div>
-	<div class="sticky top-0 h-fit max-w-sm justify-self-end">
+	<div class="sticky top-0 col-span-3 h-fit max-w-sm justify-self-end">
 		<div class="card variant-ringed-surface variant-glass mb-2 h-fit max-w-sm rounded-xl p-4">
 			<header>
 				<p class="text-4xl font-semibold">{data.eventDetails.name}</p>
@@ -75,11 +82,12 @@
 		</div>
 		<p class="mt-4 py-2 text-xl font-bold">Organizer</p>
 		<InfoCard
-			title={eventDetails.organization?.name ?? eventDetails.user?.name ?? ''}
+			href={eventDetails.organization
+				? `/organization/${eventDetails.organization.organizationId}`
+				: `/users/${eventDetails.user?.userId}`}
+			title={organizer.name ?? ''}
 			verified={eventDetails.organization?.verified ?? false}
-			imageUrl={eventDetails.organization
-				? `/uploads/images/organizations/logo/${eventDetails.organization?.logoId}.webp`
-				: `/uploads/images/users/avatar/${eventDetails.user?.avatarId}`}
-		></InfoCard>
+			imageUrl={organizer.imageUrl}
+		/>
 	</div>
 </div>

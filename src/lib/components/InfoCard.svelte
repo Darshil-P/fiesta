@@ -3,10 +3,11 @@
 	export let imageUrl: string;
 	export let title: string;
 	export let verified: boolean;
+	export let href: string;
 </script>
 
-<div class="card variant-ringed-surface variant-glass p-4">
-	<div class="flex flex-row">
+<a {href} class="card variant-ringed-surface variant-glass card-hover block w-full p-4">
+	<section class="flex flex-row">
 		<Avatar src={imageUrl} width="max-w-[64px]" rounded="rounded-full" />
 		<h4 class="h4 my-auto ml-4 mr-auto h-8 overflow-hidden overflow-ellipsis whitespace-nowrap">
 			{title}
@@ -14,5 +15,5 @@
 		{#if verified}
 			<span class="material-symbols-outlined my-auto pb-1">verified</span>
 		{/if}
-	</div>
-</div>
+	</section>
+</a>

@@ -65,3 +65,18 @@ type SubEvent = {
 	} | null;
 	venue: string | null;
 };
+
+export type OrganizationDetails = {
+	organizationId: number;
+	name: string;
+	about: string;
+	verified: boolean;
+	dateCreated: Date;
+	logoId: string | null;
+	bannerId: string | null;
+	owner: {
+		userId: number;
+		name: string;
+		avatarId: string | null;
+	} | null;
+};
