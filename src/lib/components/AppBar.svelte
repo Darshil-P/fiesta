@@ -23,10 +23,10 @@
 		</button>
 	</div>
 	<svelte:fragment slot="trail">
-		<button class="variant-filled-primary btn">
+		<a href="/events" class="variant-filled-primary btn">
 			<span class="material-symbols-outlined mt-px align-middle">local_activity</span>
 			<span class="font-bold">List Event</span>
-		</button>
+		</a>
 		{#if $userStore}
 			<a href="/profile" class="variant-outline-primary btn btn-sm rounded-3xl">
 				<Avatar
