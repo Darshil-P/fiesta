@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	// Your application's global stylesheet (sometimes labeled 'app.css')
 	import '../app.postcss';
 
@@ -9,6 +9,10 @@
 	import { AppBar, Footer } from '$lib';
 	import { AppShell } from '@skeletonlabs/skeleton';
 	import 'material-symbols';
+	import type { LayoutServerData } from './$types';
+
+	export let data: LayoutServerData;
+	const { userId } = data;
 </script>
 
 <svelte:head>
@@ -16,7 +20,7 @@
 </svelte:head>
 <AppShell>
 	<svelte:fragment slot="header">
-		<AppBar />
+		<AppBar {userId} />
 	</svelte:fragment>
 	<div class="mx-auto min-h-screen max-w-7xl p-4">
 		<slot />

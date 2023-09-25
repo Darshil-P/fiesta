@@ -46,8 +46,8 @@ export const POST = (async ({ request, cookies }) => {
 
 	const { accessToken, refreshToken } = generateTokens({ userId: userCredentials[0].userId });
 
-	cookies.set('access_token', accessToken, { path: '/' });
-	cookies.set('refresh_token', refreshToken, { path: '/' });
+	cookies.set('access_token', accessToken, { path: '/', secure: false });
+	cookies.set('refresh_token', refreshToken, { path: '/', secure: false });
 
 	return jsonResponse(JSON.stringify('User Authorized'));
 }) satisfies RequestHandler;

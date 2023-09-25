@@ -36,8 +36,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 			if (refreshToken) {
 				try {
 					const tokens = refreshTokens(accessToken, refreshToken);
-					event.cookies.set('access_token', tokens.accessToken, { path: '/' });
-					event.cookies.set('refresh_token', tokens.refreshToken, { path: '/' });
+					event.cookies.set('access_token', tokens.accessToken, { path: '/', secure: false });
+					event.cookies.set('refresh_token', tokens.refreshToken, { path: '/', secure: false });
 					event.locals.userId = verifyAccessToken(tokens.accessToken);
 					return await resolve(event);
 				} catch (e) {

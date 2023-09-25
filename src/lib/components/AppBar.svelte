@@ -1,5 +1,7 @@
-<script>
-	import { AppBar } from '@skeletonlabs/skeleton';
+<script lang="ts">
+	import { AppBar, Avatar } from '@skeletonlabs/skeleton';
+
+	export let userId: number | null;
 </script>
 
 <AppBar
@@ -26,9 +28,20 @@
 			<span class="material-symbols-outlined mt-px align-middle">local_activity</span>
 			<span class="font-bold">List Event</span>
 		</button>
-		<button class="variant-outline-primary btn rounded-3xl">
-			<span class="material-symbols-outlined mr-1 align-middle">login</span>
-			<span class="mb-0.5 font-bold">Login</span>
-		</button>
+		{#if userId}
+			<a href="/profile" class="variant-outline-primary btn rounded-3xl">
+				<Avatar
+					src={`/uploads/images/users/avatar/${userId}`}
+					width="max-w-[64px]"
+					rounded="rounded-full"
+				/>
+				<span class="mb-0.5 font-bold">Profile</span>
+			</a>
+		{:else}
+			<a href="/login" class="variant-outline-primary btn rounded-3xl">
+				<span class="material-symbols-outlined mr-1 align-middle">login</span>
+				<span class="mb-0.5 font-bold">Login</span>
+			</a>
+		{/if}
 	</svelte:fragment>
 </AppBar>
