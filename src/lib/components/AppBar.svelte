@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { userStore } from '$lib/stores/user';
-	import { AppBar, Avatar } from '@skeletonlabs/skeleton';
+	import { AppBar, Avatar, LightSwitch } from '@skeletonlabs/skeleton';
 </script>
 
 <AppBar
@@ -45,5 +45,6 @@
 				<span class="mb-0.5 font-bold">Login</span>
 			</a>
 		{/if}
+		<LightSwitch class="min-w-[48px]" />
 	</svelte:fragment>
 </AppBar>
