@@ -87,3 +87,7 @@ export type User = {
 	name: string;
 	dateCreated: Date;
 };
+
+type FormError = {
+	[key: string]: null | string;
+};
