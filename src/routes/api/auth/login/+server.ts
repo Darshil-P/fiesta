@@ -1,7 +1,7 @@
+import { PASSWORD_REGEX } from '$lib/constants';
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
 import { generateTokens } from '$lib/server/jwt';
-import { PASSWORD_REGEX } from '$lib/server/regex';
 import { userCredentialsTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import bcrypt from 'bcryptjs';

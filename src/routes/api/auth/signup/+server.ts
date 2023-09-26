@@ -1,7 +1,7 @@
+import { NAME_REGEX, PASSWORD_REGEX, PHONE_REGEX } from '$lib/constants';
 import { fileLocation, supportedImageTypes } from '$lib/server/constants';
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
-import { NAME_REGEX, PASSWORD_REGEX, PHONE_REGEX } from '$lib/server/regex';
 import { userCredentialsTable, usersTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import bcrypt from 'bcryptjs';
