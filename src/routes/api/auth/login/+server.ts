@@ -18,7 +18,7 @@ const selectUsersCredentials = db
 	.from(userCredentialsTable)
 	.where(
 		sql.placeholder('email')
-			? eq(userCredentialsTable.email, sql.placeholder('email'))
+			? eq(sql`lower(${userCredentialsTable.email})`, sql`lower(${sql.placeholder('email')})`)
 			: eq(userCredentialsTable.mobile, sql.placeholder('mobile'))
 	)
 	.prepare('select_user_credentials');
