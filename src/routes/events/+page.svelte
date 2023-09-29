@@ -7,10 +7,12 @@
 	let locked = true;
 
 	let eventFormData: any;
+	let eventMediaFormData: any;
 	let formInvalid: boolean;
 
 	function onNextHandler(e: CustomEvent): void {
 		console.log(eventFormData);
+		console.log(eventMediaFormData);
 	}
 	function onBackHandler(e: CustomEvent): void {
 		console.log('event:prev', e.detail);
@@ -34,9 +36,9 @@
 		<svelte:fragment slot="header">Event Info</svelte:fragment>
 		<EventForm bind:formData={eventFormData} bind:formInvalid />
 	</Step>
-	<Step>
+	<Step bind:locked={formInvalid}>
 		<svelte:fragment slot="header">Upload Event Media</svelte:fragment>
-		<EventMediaForm />
+		<EventMediaForm bind:formData={eventMediaFormData} bind:formInvalid />
 	</Step>
 	<Step>
 		<svelte:fragment slot="header">Sub Events</svelte:fragment>
