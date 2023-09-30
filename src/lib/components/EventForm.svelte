@@ -17,11 +17,6 @@
 		{ id: 5, value: 'Option 5' }
 	];
 
-	const ticketTypes = [
-		{ key: 0, value: 'Free' },
-		{ key: 1, value: 'Paid' }
-	];
-
 	export let formData = {
 		title: 'Sample Event',
 		description:
@@ -30,9 +25,7 @@
 		endDate: new Date().toISOString().substring(0, 10),
 		venue: 'Mithibai College',
 		organization: 0,
-		category: 1,
-		ticketType: 0,
-		ticketPrice: 100
+		category: 1
 	};
 
 	export let formError: FormError = {
@@ -40,8 +33,7 @@
 		description: null,
 		startDate: null,
 		endDate: null,
-		venue: null,
-		ticketPrice: null
+		venue: null
 	};
 
 	export let formInvalid;
@@ -85,24 +77,6 @@
 
 		errorMessage = null;
 	};
-
-	const validateTicketPrice = () => {
-		if (ticketType == 0) {
-			formError.ticketPrice = null;
-			return (formData.ticketPrice = 0);
-		}
-		if (
-			formData.ticketPrice == null ||
-			formData.ticketPrice < 100 ||
-			formData.ticketPrice > 10000
-		) {
-			return (formError.ticketPrice = 'Ticket price must be within the range 100 - 10000');
-		}
-		formError.ticketPrice = null;
-	};
-
-	let ticketType = 0;
-	$: amountDisabled = ticketType == 0;
 </script>
 
 <form class="grid grid-cols-2 gap-6">
@@ -217,43 +191,6 @@
 				<option value={category.id}>{category.value} </option>
 			{/each}
 		</select>
-	</label>
-	<label class="label">
-		<span class="font-bold">Ticket</span>
-		<div class="my-auto mt-4 flex flex-row gap-4 align-middle">
-			{#each ticketTypes as type}
-				<button
-					class="chip text-sm font-bold {ticketType === type.key
-						? 'variant-filled'
-						: 'variant-outline-surface'}"
-					on:click={() => {
-						ticketType = type.key;
-						validateTicketPrice();
-					}}
-					on:keypress
-				>
-					<span>{type.value}</span>
-				</button>
-			{/each}
-			<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-				<div class="input-group-shim">
-					<span class="material-symbols-outlined">currency_rupee</span>
-				</div>
-				<input
-					bind:value={formData.ticketPrice}
-					on:input={validateTicketPrice}
-					class="input p-2"
-					type="number"
-					min="100"
-					max="10000"
-					disabled={amountDisabled}
-					placeholder="Ticket Price"
-				/>
-			</div>
-		</div>
-		{#if formError.ticketPrice}
-			<div class="variant-ghost-error p-0.5 px-2 text-xs">{formError.ticketPrice}</div>
-		{/if}
 	</label>
 	{#if errorMessage}
 		<p class="variant-ghost-error col-span-2 p-0.5 px-2 text-xs">

@@ -1,18 +1,21 @@
 <script lang="ts">
 	import EventForm from '$lib/components/EventForm.svelte';
 	import EventMediaForm from '$lib/components/EventMediaForm.svelte';
+	import EventTicketForm from '$lib/components/EventTicketForm.svelte';
 	import SubEventsForm from '$lib/components/SubEventsForm.svelte';
 	import { Step, Stepper } from '@skeletonlabs/skeleton';
 
 	let eventFormData: any;
 	let eventMediaFormData: any;
 	let subEventFormData: any;
+	let eventTicketFormData: any;
 	let formInvalid: boolean;
 
 	function onNextHandler(e: CustomEvent): void {
 		console.log(eventFormData);
 		console.log(eventMediaFormData);
 		console.log(subEventFormData);
+		console.log(eventTicketFormData);
 	}
 	function onBackHandler(e: CustomEvent): void {
 		console.log('event:prev', e.detail);
@@ -44,7 +47,8 @@
 		<svelte:fragment slot="header">Sub Events</svelte:fragment>
 		<SubEventsForm bind:formData={subEventFormData} />
 	</Step>
-	<Step locked={true}>
+	<Step bind:locked={formInvalid}>
 		<svelte:fragment slot="header">Final Step</svelte:fragment>
+		<EventTicketForm bind:formData={eventTicketFormData} bind:formInvalid />
 	</Step>
 </Stepper>
