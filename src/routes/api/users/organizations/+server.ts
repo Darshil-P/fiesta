@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
 import { organizationMembersTable, organizationsTable } from '$lib/server/schema';
-import { error, type RequestHandler } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { eq, or, sql } from 'drizzle-orm';
 
 const selectUserOrganizations = db
@@ -28,10 +28,6 @@ export const GET = (async ({ locals }) => {
 	const userId = locals.userId;
 
 	const userOrganizations = await selectUserOrganizations.execute({ userId });
-
-	if (userOrganizations.length == 0) {
-		throw error(404, 'Organizations Not Found');
-	}
 
 	return jsonResponse(JSON.stringify(userOrganizations));
 }) satisfies RequestHandler;

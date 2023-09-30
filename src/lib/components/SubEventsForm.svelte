@@ -1,13 +1,7 @@
 <script lang="ts">
-	import type { FormError } from '$lib/types';
+	import type { Category, FormError } from '$lib/types';
 
-	export let categories = [
-		{ id: 1, value: 'Option 1' },
-		{ id: 2, value: 'Option 2' },
-		{ id: 3, value: 'Option 3' },
-		{ id: 4, value: 'Option 4' },
-		{ id: 5, value: 'Option 5' }
-	];
+	export let categories: Array<Category>;
 
 	type SubEvent = {
 		title: string;
@@ -158,7 +152,7 @@
 			<span class="font-bold">Category</span>
 			<select bind:value={subEvent.category} class="imput select p-2">
 				{#each categories as category}
-					<option value={category.id}>{category.value} </option>
+					<option value={category.categoryId}>{category.name} </option>
 				{/each}
 			</select>
 		</label>

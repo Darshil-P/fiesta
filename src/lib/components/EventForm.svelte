@@ -1,21 +1,9 @@
 <script lang="ts">
-	import type { FormError } from '$lib/types';
+	import type { Category, FormError, Organization } from '$lib/types';
 
-	export let organizations = [
-		{ id: 1, value: 'Option 1' },
-		{ id: 2, value: 'Option 2' },
-		{ id: 3, value: 'Option 3' },
-		{ id: 4, value: 'Option 4' },
-		{ id: 5, value: 'Option 5' }
-	];
+	export let organizations: Array<Organization>;
 
-	export let categories = [
-		{ id: 1, value: 'Option 1' },
-		{ id: 2, value: 'Option 2' },
-		{ id: 3, value: 'Option 3' },
-		{ id: 4, value: 'Option 4' },
-		{ id: 5, value: 'Option 5' }
-	];
+	export let categories: Array<Category>;
 
 	export let formData = {
 		title: 'Sample Event',
@@ -180,7 +168,7 @@
 		<select bind:value={formData.organization} disabled={isSelfOrganized} class="select">
 			<option value={0}>Self Organized</option>
 			{#each organizations as organization}
-				<option value={organization.id}>{organization.value} </option>
+				<option value={organization.organizationId}>{organization.name} </option>
 			{/each}
 		</select>
 	</label>
@@ -188,7 +176,7 @@
 		<span class="font-bold">Category</span>
 		<select bind:value={formData.category} class="select">
 			{#each categories as category}
-				<option value={category.id}>{category.value} </option>
+				<option value={category.categoryId}>{category.name} </option>
 			{/each}
 		</select>
 	</label>
