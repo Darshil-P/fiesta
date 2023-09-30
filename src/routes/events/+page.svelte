@@ -4,15 +4,15 @@
 	import SubEventsForm from '$lib/components/SubEventsForm.svelte';
 	import { Step, Stepper } from '@skeletonlabs/skeleton';
 
-	let locked = true;
-
 	let eventFormData: any;
 	let eventMediaFormData: any;
+	let subEventFormData: any;
 	let formInvalid: boolean;
 
 	function onNextHandler(e: CustomEvent): void {
 		console.log(eventFormData);
 		console.log(eventMediaFormData);
+		console.log(subEventFormData);
 	}
 	function onBackHandler(e: CustomEvent): void {
 		console.log('event:prev', e.detail);
@@ -42,9 +42,9 @@
 	</Step>
 	<Step>
 		<svelte:fragment slot="header">Sub Events</svelte:fragment>
-		<SubEventsForm />
+		<SubEventsForm bind:formData={subEventFormData} />
 	</Step>
-	<Step {locked}>
+	<Step locked={true}>
 		<svelte:fragment slot="header">Final Step</svelte:fragment>
 	</Step>
 </Stepper>
