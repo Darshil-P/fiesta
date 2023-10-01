@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { userStore } from '$lib/stores/user';
+	import type { User } from '$lib/types';
 	import { AppBar, Avatar, LightSwitch } from '@skeletonlabs/skeleton';
+
+	export let user: User;
 </script>
 
 <AppBar
@@ -27,16 +29,16 @@
 			<span class="material-symbols-outlined mt-px align-middle">local_activity</span>
 			<span class="font-bold">List Event</span>
 		</a>
-		{#if $userStore}
+		{#if user}
 			<a href="/profile" class="variant-outline-primary btn btn-sm rounded-3xl">
 				<Avatar
-					src={`/uploads/images/avatar/${$userStore.avatarId}`}
+					src={`/uploads/images/avatar/${user.avatarId}`}
 					width="max-w-[64px] w-8"
 					rounded="rounded-full"
 				/>
 				<span
 					class="mb-0.5 line-clamp-1 max-w-[96px] overflow-ellipsis whitespace-break-spaces break-words font-bold"
-					>{$userStore.name}</span
+					>{user.name}</span
 				>
 			</a>
 		{:else}
