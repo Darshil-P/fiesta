@@ -6,23 +6,33 @@
 	import EventTicketForm from '$lib/components/EventTicketForm.svelte';
 	import SubEventsForm from '$lib/components/SubEventsForm.svelte';
 	import { Step, Stepper } from '@skeletonlabs/skeleton';
+	import { onDestroy, onMount } from 'svelte';
 	import type { PageData } from './$types';
 
 	const user = $page.data.user;
 
 	let redirectTimer = 4;
+	let redirectCancelled = false;
 
 	const redirectUser = async () => {
 		for (let i = redirectTimer; i > 0; i--) {
 			redirectTimer = i;
 			await new Promise((r) => setTimeout(r, 1000));
 		}
-		goto('/login');
+		if (!redirectCancelled) {
+			goto('/login');
+		}
 	};
 
-	if (!user) {
-		redirectUser();
-	}
+	onMount(() => {
+		if (!user) {
+			redirectUser();
+		}
+	});
+
+	onDestroy(() => {
+		redirectCancelled = true;
+	});
 
 	export let data: PageData;
 	const { categories, organizations } = data;
