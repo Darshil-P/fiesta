@@ -88,6 +88,18 @@ export type User = {
 	dateCreated: Date;
 };
 
+type Category = {
+	categoryId: number;
+	name: string;
+};
+
+type Organization = {
+	organizationId: number;
+	name: string;
+	verified: boolean;
+	logoId: string | null;
+};
+
 type FormError = {
 	[key: string]: null | string;
 };
