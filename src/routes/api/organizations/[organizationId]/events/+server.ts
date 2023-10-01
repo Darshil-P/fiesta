@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
-import { eventsTable, organizationsTable } from '$lib/server/schema';
+import { categoriesTable, eventsTable, organizationsTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { and, eq, sql } from 'drizzle-orm';
 import Joi from 'joi';
@@ -15,7 +15,7 @@ const selectOrganizationEvents = db
 		startDate: eventsTable.startDate,
 		endDate: eventsTable.endDate,
 		status: eventsTable.status,
-		category: eventsTable.category,
+		category: categoriesTable.name,
 		thumbnailId: eventsTable.thumbnailId,
 		organization: {
 			organizationId: organizationsTable.organizationId,
@@ -31,6 +31,7 @@ const selectOrganizationEvents = db
 		)
 	)
 	.leftJoin(organizationsTable, eq(organizationsTable.organizationId, eventsTable.ownerId))
+	.leftJoin(categoriesTable, eq(categoriesTable.categoryId, eventsTable.categoryId))
 	.prepare('select_organization_events');
 
 export const GET = (async ({ params }) => {

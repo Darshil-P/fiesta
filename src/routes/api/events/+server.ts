@@ -21,11 +21,11 @@ const requestSchema = joi.object({
 			description: joi.string().max(4000).required(),
 			ownerId: joi.number().precision(0).required(),
 			ownerType: joi.string().valid('user', 'organization').required(),
-			startDate: joi.date().min(Date.now()).required(),
+			startDate: joi.date().min('now').required(),
 			endDate: joi.date().min(joi.ref('startDate')).required(),
-			status: joi.string(),
-			category: joi.string(),
-			venue: joi.string(),
+			status: joi.string().required(),
+			categoryId: joi.number().precision(0).required(),
+			venue: joi.string().required(),
 			terms: joi.string().max(4000)
 		})
 		.required(),
@@ -41,7 +41,7 @@ const requestSchema = joi.object({
 	ticket: joi.object({
 		price: joi.number().required(),
 		ticketsTotal: joi.number().precision(0).required(),
-		ticketsAvailable: joi.number().precision(0).max(joi.ref('ticketsTotal')).required(),
+		// ticketsAvailable: joi.number().precision(0).max(joi.ref('ticketsTotal')).required(),
 		type: joi.number().precision(0)
 	})
 });
@@ -56,7 +56,7 @@ const insertEvent = db
 		startDate: sql.placeholder('startDate'),
 		endDate: sql.placeholder('endDate'),
 		status: sql.placeholder('status'),
-		category: sql.placeholder('category'),
+		categoryId: sql.placeholder('categoryId'),
 		venue: sql.placeholder('venue'),
 		thumbnailId: sql.placeholder('thumbnailId'),
 		terms: sql.placeholder('terms'),
@@ -92,7 +92,8 @@ const insertEventTicket = db
 	})
 	.prepare('insert_event_ticket');
 
-export const POST = (async ({ request }) => {
+export const POST = (async ({ request, locals }) => {
+	const userId = locals.user.userId;
 	const formData = await request.formData();
 	const requestBody = JSON.parse(formData.get('body') as string);
 	const thumbnail = formData.get('thumbnail') as File;
@@ -147,11 +148,11 @@ export const POST = (async ({ request }) => {
 		startDate: event.startDate,
 		endDate: event.endDate,
 		status: event.status,
-		category: event.category,
+		categoryId: event.categoryId,
 		venue: event.venue,
 		thumbnailId: thumbnailId,
 		eventId: event.eventId,
-		ownerId: event.ownerId,
+		ownerId: event.ownerId == 0 ? userId : event.ownerId,
 		ownerType: event.ownerType,
 		terms: event.terms,
 		imageIds: imageIds,
@@ -180,7 +181,7 @@ export const POST = (async ({ request }) => {
 			eventId: newEvent[0].eventId,
 			price: ticket.price,
 			ticketsTotal: ticket.ticketsTotal,
-			ticketsAvailable: ticket.ticketsAvailable,
+			ticketsAvailable: ticket.ticketsTotal,
 			type: ticket.type ?? 0
 		};
 
@@ -204,5 +205,5 @@ export const POST = (async ({ request }) => {
 	});
 	if (writeError) throw error(500, 'unable to save image, try again later');
 
-	return jsonResponse(JSON.stringify(newEvent));
+	return jsonResponse(JSON.stringify(newEvent[0]), 201);
 }) satisfies RequestHandler;

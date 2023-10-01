@@ -1,11 +1,9 @@
 <script lang="ts">
 	import ImagePreviewCard from '$lib/components/ImagePreviewCard.svelte';
+	import type { EventMediaFormData } from '$lib/types';
 	import { FileDropzone } from '@skeletonlabs/skeleton';
 
-	export let formData = {
-		thumbnail: [] as unknown as FileList,
-		pictures: [] as unknown as FileList
-	};
+	export let formData: EventMediaFormData;
 
 	export let formInvalid;
 	$: formInvalid = formData.thumbnail.length !== 1 || formData.pictures.length < 1;

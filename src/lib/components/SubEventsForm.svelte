@@ -1,28 +1,26 @@
 <script lang="ts">
-	import type { Category, FormError } from '$lib/types';
+	import type { Category, FormError, SubEventsFormData } from '$lib/types';
 
 	export let categories: Array<Category>;
 
 	type SubEvent = {
-		title: string;
+		name: string;
 		description: string;
 		datetime: string;
 		venue: string;
-		category: number;
+		categoryId: number;
 	};
 
 	const subEvent: SubEvent = {
-		title: 'Sub-Event 1',
+		name: 'Sub-Event 1',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vel orci porta non pulvinar neque laoreet. Mattis nunc sed blandit libero volutpat sed cras ornare. Sit amet tellus cras adipiscing enim eu. Eu non diam phasellus vestibulum lorem sed risus ultricies. Sed viverra ipsum nunc aliquet bibendum enim facilisis gravida neque. Sed vulputate mi sit amet mauris commodo. Phasellus vestibulum lorem sed risus. Condimentum vitae sapien pellentesque habitant morbi tristique senectus et. Sodales ut eu sem integer vitae justo eget. Sed lectus vestibulum mattis ullamcorper velit sed ullamcorper morbi. Lorem mollis aliquam ut porttitor leo a diam. Vitae congue mauris rhoncus aenean vel elit scelerisque mauris. Cras fermentum odio eu feugiat. Faucibus turpis in eu mi bibendum neque. Sed augue lacus viverra vitae congue eu consequat ac.',
 		datetime: new Date().toISOString().substring(0, 16),
 		venue: 'Mithibai College',
-		category: 1
+		categoryId: 1
 	};
 
-	export let formData = {
-		subEvents: [] as Array<SubEvent>
-	};
+	export let formData: SubEventsFormData;
 
 	let currentSubEvent = 0;
 
@@ -48,41 +46,41 @@
 	};
 
 	const resetSubEvent = () => {
-		currentSubEvent = formData.subEvents.length;
-		subEvent.title = '';
+		currentSubEvent = formData.length;
+		subEvent.name = '';
 		subEvent.description = '';
 		subEvent.datetime = new Date().toISOString().substring(0, 16);
 		subEvent.venue = '';
-		subEvent.category = 1;
+		subEvent.categoryId = 1;
 	};
 
 	const handleAddSubEvent = () => {
-		formData.subEvents = [...formData.subEvents, { ...subEvent }];
+		formData = [...formData, { ...subEvent }];
 		resetSubEvent();
 	};
 
 	const handleEdit = (index: number) => {
 		console.log(`Edit ${index}`);
 		currentSubEvent = index;
-		const editSubEvent = formData.subEvents[index];
-		subEvent.title = editSubEvent.title;
+		const editSubEvent = formData[index];
+		subEvent.name = editSubEvent.name;
 		subEvent.description = editSubEvent.description;
 		subEvent.datetime = editSubEvent.datetime;
 		subEvent.venue = editSubEvent.venue;
-		subEvent.category = editSubEvent.category;
+		subEvent.categoryId = editSubEvent.categoryId;
 	};
 
 	const handleSaveSubEvent = () => {
-		const subEvents = [...formData.subEvents];
+		const subEvents = [...formData];
 		subEvents[currentSubEvent] = { ...subEvent };
-		formData.subEvents = subEvents;
+		formData = subEvents;
 		resetSubEvent();
 	};
 
 	const handleDelete = (index: number) => {
-		const subEvents = [...formData.subEvents];
+		const subEvents = [...formData];
 		subEvents.splice(index, 1);
-		formData.subEvents = subEvents;
+		formData = subEvents;
 	};
 </script>
 
@@ -91,9 +89,9 @@
 		<label class="label col-span-2">
 			<span class="font-bold">Event Title</span>
 			<input
-				bind:value={subEvent.title}
+				bind:value={subEvent.name}
 				on:input={() => {
-					formError.title = subEvent.title == '' ? 'Title field cannot be empty' : null;
+					formError.title = subEvent.name == '' ? 'Title field cannot be empty' : null;
 				}}
 				class="input p-2"
 				type="text"
@@ -150,7 +148,7 @@
 		</label>
 		<label class="label">
 			<span class="font-bold">Category</span>
-			<select bind:value={subEvent.category} class="imput select p-2">
+			<select bind:value={subEvent.categoryId} class="imput select p-2">
 				{#each categories as category}
 					<option value={category.categoryId}>{category.name} </option>
 				{/each}
@@ -158,7 +156,7 @@
 		</label>
 		<span />
 		<p class="col-span-2">Make sure to click the <b>+ Add</b> button to save your sub-event!</p>
-		{#if currentSubEvent == formData.subEvents.length}
+		{#if currentSubEvent == formData.length}
 			<button
 				on:click={handleAddSubEvent}
 				disabled={Object.values(subEvent).some((v) => v == '')}
@@ -181,11 +179,11 @@
 
 	<div class="flex max-h-[34rem] flex-col gap-4 overflow-auto">
 		<span class="font-bold">Added events</span>
-		{#each formData.subEvents as subEvent, i}
+		{#each formData as subEvent, i}
 			<div class="card variant-ghost-surface w-full p-3">
 				<div class="flex justify-between">
 					<span class="line-clamp-1 w-full overflow-ellipsis break-words px-3">
-						{subEvent.title}
+						{subEvent.name}
 					</span>
 					<div class="flex gap-4">
 						<button on:click={() => handleEdit(i)} class="material-symbols-outlined"> edit </button>

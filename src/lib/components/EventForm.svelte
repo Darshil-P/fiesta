@@ -1,22 +1,12 @@
 <script lang="ts">
-	import type { Category, FormError, Organization } from '$lib/types';
+	import type { Category, EventFormData, FormError, Organization } from '$lib/types';
 
 	export let organizations: Array<Organization>;
-
 	export let categories: Array<Category>;
+	export let formData: EventFormData;
+	export let formInvalid;
 
-	export let formData = {
-		title: 'Sample Event',
-		description:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vel orci porta non pulvinar neque laoreet. Mattis nunc sed blandit libero volutpat sed cras ornare. Sit amet tellus cras adipiscing enim eu. Eu non diam phasellus vestibulum lorem sed risus ultricies. Sed viverra ipsum nunc aliquet bibendum enim facilisis gravida neque. Sed vulputate mi sit amet mauris commodo. Phasellus vestibulum lorem sed risus. Condimentum vitae sapien pellentesque habitant morbi tristique senectus et. Sodales ut eu sem integer vitae justo eget. Sed lectus vestibulum mattis ullamcorper velit sed ullamcorper morbi. Lorem mollis aliquam ut porttitor leo a diam. Vitae congue mauris rhoncus aenean vel elit scelerisque mauris. Cras fermentum odio eu feugiat. Faucibus turpis in eu mi bibendum neque. Sed augue lacus viverra vitae congue eu consequat ac.',
-		startDate: new Date().toISOString().substring(0, 10),
-		endDate: new Date().toISOString().substring(0, 10),
-		venue: 'Mithibai College',
-		organization: 0,
-		category: 1
-	};
-
-	export let formError: FormError = {
+	let formError: FormError = {
 		title: null,
 		description: null,
 		startDate: null,
@@ -24,14 +14,8 @@
 		venue: null
 	};
 
-	export let formInvalid;
-	$: formInvalid =
-		errorMessage ||
-		Object.values(formError).some((err) => err != null) ||
-		Object.values(formData).some((v) => v === '') != false;
-
 	let errorMessage: null | string;
-	let isSingleDayEvent = false;
+	let isSingleDayEvent = true;
 	let isSelfOrganized = true;
 
 	const toggleIsSingleDayEvent = () => {
@@ -41,7 +25,7 @@
 	};
 
 	const toggleIsSelfOrganized = () => {
-		formData.organization = 0;
+		formData.ownerId = 0;
 		isSelfOrganized = !isSelfOrganized;
 	};
 
@@ -65,15 +49,20 @@
 
 		errorMessage = null;
 	};
+
+	$: formInvalid =
+		errorMessage ||
+		Object.values(formError).some((err) => err != null) ||
+		Object.values(formData).some((v) => v === '') != false;
 </script>
 
 <form class="grid grid-cols-2 gap-6">
 	<label class="label col-span-2">
 		<span class="font-bold">Event Title</span>
 		<input
-			bind:value={formData.title}
+			bind:value={formData.name}
 			on:input={() =>
-				(formError.title = formData.title == '' ? 'Title field cannot be empty' : null)}
+				(formError.title = formData.name == '' ? 'Title field cannot be empty' : null)}
 			class="input p-2"
 			type="text"
 			maxlength="100"
@@ -165,7 +154,7 @@
 	</label>
 	<label class="label">
 		<span class="font-bold">Organization</span>
-		<select bind:value={formData.organization} disabled={isSelfOrganized} class="select">
+		<select bind:value={formData.ownerId} disabled={isSelfOrganized} class="select">
 			<option value={0}>Self Organized</option>
 			{#each organizations as organization}
 				<option value={organization.organizationId}>{organization.name} </option>

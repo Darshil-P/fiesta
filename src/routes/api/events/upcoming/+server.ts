@@ -1,6 +1,12 @@
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
-import { eventTicketsTable, eventsTable, organizationsTable, usersTable } from '$lib/server/schema';
+import {
+	categoriesTable,
+	eventTicketsTable,
+	eventsTable,
+	organizationsTable,
+	usersTable
+} from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { and, eq, gt, sql } from 'drizzle-orm';
 
@@ -12,7 +18,7 @@ const selectUpcomingEvents = db
 		endDate: eventsTable.endDate,
 		status: eventsTable.status,
 		venue: eventsTable.venue,
-		category: eventsTable.category,
+		category: categoriesTable.name,
 		thumbnailId: eventsTable.thumbnailId,
 		ownerType: eventsTable.ownerType,
 		ticketPrice: eventTicketsTable.price,
@@ -39,6 +45,7 @@ const selectUpcomingEvents = db
 		usersTable,
 		and(eq(eventsTable.ownerType, 'user'), eq(eventsTable.ownerId, usersTable.userId))
 	)
+	.leftJoin(categoriesTable, eq(eventsTable.categoryId, categoriesTable.categoryId))
 	.leftJoin(eventTicketsTable, eq(eventTicketsTable.eventId, eventsTable.eventId))
 	.prepare('select_upcoming_events');
 

@@ -34,10 +34,12 @@
 				/>
 			{/each}
 		</div>
-		<p class="mt-4 py-2 text-xl font-bold">Terms & Conditions</p>
-		<p>
-			{data.eventDetails.terms}
-		</p>
+		{#if data.eventDetails.terms}
+			<p class="mt-4 py-2 text-xl font-bold">Terms & Conditions</p>
+			<p>
+				{@html data.eventDetails.terms.replace(/\n/g, '<br>')}
+			</p>
+		{/if}
 	</div>
 	<div class="sticky top-0 col-span-3 h-fit max-w-sm justify-self-end">
 		<div class="card variant-ringed-surface variant-glass mb-2 h-fit max-w-sm rounded-xl p-4">

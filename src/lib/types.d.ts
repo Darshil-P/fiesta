@@ -110,3 +110,34 @@ type Organization = {
 type FormError = {
 	[key: string]: null | string;
 };
+
+type EventFormData = {
+	name: string;
+	description: string;
+	ownerId: number;
+	startDate: string;
+	endDate: string;
+	category: number;
+	venue: string;
+};
+
+type EventMediaFormData = {
+	thumbnail: FileList;
+	pictures: FileList;
+};
+
+type SubEventsFormData = {
+	name: string;
+	description: string;
+	datetime: string;
+	categoryId: number;
+	venue: string;
+}[];
+
+type EventTicketFormData = {
+	price: number;
+	ticketsTotal: number;
+	type: number;
+	status: number;
+	terms: string | null;
+};

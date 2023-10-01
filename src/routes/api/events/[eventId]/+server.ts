@@ -26,7 +26,7 @@ const selectEventDetails = db
 		status: eventsTable.status,
 		venue: eventsTable.venue,
 		ticketPrice: eventTicketsTable.price,
-		category: eventsTable.category,
+		category: categoriesTable.name,
 		terms: eventsTable.terms,
 		thumbnailId: eventsTable.thumbnailId,
 		imageIds: eventsTable.imageIds,
@@ -60,6 +60,7 @@ const selectEventDetails = db
 		usersTable,
 		and(eq(eventsTable.ownerType, 'user'), eq(eventsTable.ownerId, usersTable.userId))
 	)
+	.leftJoin(categoriesTable, eq(eventsTable.categoryId, categoriesTable.categoryId))
 	.leftJoin(eventTicketsTable, eq(eventTicketsTable.eventId, eventsTable.eventId))
 	.prepare('select_event_details');
 
