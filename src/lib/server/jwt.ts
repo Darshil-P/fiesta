@@ -39,10 +39,10 @@ export function refreshTokens(accessToken: string, refreshToken: string) {
 	const index = tokenStore.indexOf(refreshToken);
 	tokenStore.splice(index, 1);
 
-	return generateTokens({ userId: oldAccessToken.userId } ?? {});
+	return generateTokens({ user: oldAccessToken.user } ?? {});
 }
 
-export function verifyAccessToken(accessToken: string): number {
+export function verifyAccessToken(accessToken: string) {
 	const token = jwt.verify(accessToken, JWT_SECRET) as JwtPayload;
-	return token.userId;
+	return token.user;
 }

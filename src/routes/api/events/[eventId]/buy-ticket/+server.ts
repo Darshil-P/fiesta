@@ -77,7 +77,7 @@ const setEventStatusSold = db
 	.prepare('set_event_status_sold');
 
 export const POST = (async ({ request, params, locals }) => {
-	const userId = locals.userId;
+	const userId = locals.user.userId;
 	const eventId = Number.parseInt(params.eventId ?? '');
 	const requestBody = await request.json();
 

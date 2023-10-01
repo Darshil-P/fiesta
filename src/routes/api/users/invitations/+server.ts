@@ -23,7 +23,7 @@ const selectUserInvitations = db
 	.prepare('select_user_invites');
 
 export const GET = (async ({ locals }) => {
-	const userId = locals.userId;
+	const userId = locals.user.userId;
 
 	const userInvites = await selectUserInvitations.execute({ userId });
 

@@ -46,7 +46,7 @@ const insertOrganizationInvite = db
 export const POST = (async ({ request, locals, params }) => {
 	const requestBody = await request.json();
 	const organizationId = Number.parseInt(params.organizationId ?? '');
-	const inviter = locals.userId;
+	const inviter = locals.user.userId;
 
 	const { error: validationError } = requestSchema.validate({ organizationId, ...requestBody });
 	if (validationError) {

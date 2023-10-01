@@ -94,7 +94,7 @@ const setInvitationStatusAccepted = db
 
 export const POST = (async ({ locals, params }) => {
 	const invitationId = Number.parseInt(params.invitationId ?? '');
-	const userId = locals.userId;
+	const userId = locals.user.userId;
 
 	const { error: validationError } = requestSchema.validate(invitationId);
 	if (validationError) {

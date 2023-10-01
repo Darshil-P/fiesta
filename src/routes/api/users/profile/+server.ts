@@ -11,7 +11,7 @@ const selectUserProfile = db
 	.prepare('select_user_profile');
 
 export const GET = (async ({ locals }) => {
-	const userId = locals.userId;
+	const userId = locals.user.userId;
 
 	const users = await selectUserProfile.execute({ userId });
 

@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import EventForm from '$lib/components/EventForm.svelte';
 	import EventMediaForm from '$lib/components/EventMediaForm.svelte';
 	import EventTicketForm from '$lib/components/EventTicketForm.svelte';
 	import SubEventsForm from '$lib/components/SubEventsForm.svelte';
-	import { userStore } from '$lib/stores/user';
 	import { Step, Stepper } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
+
+	const user = $page.data.user;
 
 	let redirectTimer = 4;
 
@@ -18,7 +20,7 @@
 		goto('/login');
 	};
 
-	if (!$userStore) {
+	if (!user) {
 		redirectUser();
 	}
 
@@ -49,7 +51,7 @@
 	}
 </script>
 
-{#if $userStore}
+{#if user}
 	<Stepper
 		on:next={onNextHandler}
 		on:back={onBackHandler}

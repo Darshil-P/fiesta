@@ -52,7 +52,7 @@ const selectUserEvents = db
 	.prepare('select_user_events');
 
 export const GET = (async ({ locals }) => {
-	const userId = locals.userId;
+	const userId = locals.user.userId;
 
 	const userEvents = await selectUserEvents.execute({ userId });
 

@@ -1,7 +1,10 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { enhance } from '$app/forms';
 	import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX, PHONE_REGEX } from '$lib/constants';
 	import type { FormError } from '$lib/types';
+	import type { ActionData } from './$types';
+
+	export let form: ActionData;
 
 	let formData = {
 		name: 'YourName',
@@ -25,8 +28,6 @@
 			formError.mobile ||
 			formError.password ||
 			formError.rePassword) == null;
-
-	let errorMessage: null | string;
 
 	let visibility = false;
 
@@ -64,46 +65,33 @@
 		formError.rePassword = null;
 	};
 
-	const handleLogin = async () => {
-		const { name, email, mobile, password } = formData;
-		const body = new FormData();
-		errorMessage = '';
-
-		body.append(
-			'user',
-			JSON.stringify({
-				name,
-				email,
-				mobile,
-				password
-			})
-		);
-
-		const response = await fetch('/api/auth/signup', {
-			method: 'POST',
-			body
-		});
-
-		if (response.status == 409) {
-			return (errorMessage = 'Phone or email already register');
-		}
-
-		if (response.status == 201) {
-			goto('/login');
-		} else {
-			errorMessage = (await response.json()).message;
-		}
-	};
-
 	const toggleVisibility = () => (visibility = !visibility);
 </script>
 
-<div class="card variant-ghost-surface mx-auto my-8 grid max-w-3xl grid-cols-2 gap-6 px-32 py-6">
+<form
+	method="POST"
+	class="card variant-ghost-surface mx-auto my-8 grid max-w-3xl grid-cols-2 gap-6 px-32 py-6"
+	use:enhance
+>
 	<h2 class="h2 col-span-2 mx-auto font-bold">Let's get started</h2>
 	<hr class="col-span-2" />
-	{#if errorMessage}<p class="variant-ghost-error col-span-2 p-0.5 px-2 text-xs">
-			{errorMessage}
-		</p>{/if}
+	{#if form}
+		<span class="variant-ghost-error col-span-2 p-0.5 px-2 text-xs">
+			{#if form.invalid}
+				<ul class="ml-4 list-disc">
+					<li>Name cannot contain special characters or numbers</li>
+					<li>Phone number must be a valid</li>
+					<li>Email address must be valid</li>
+					<li>Password must contain uppercase, lowercase, numerical & a special character</li>
+				</ul>
+			{/if}
+			{form.alreadyExist
+				? 'Email or phone already registered'
+				: form.error
+				? 'Something went wrong, try again later'
+				: ''}
+		</span>
+	{/if}
 	<label class="label col-span-2">
 		<span>Name</span>
 		<input
@@ -111,6 +99,7 @@
 			bind:value={formData.name}
 			on:input={validateName}
 			type="text"
+			name="name"
 			placeholder="Your Name"
 			required
 			autocapitalize="words"
@@ -125,6 +114,7 @@
 			class="input p-2"
 			bind:value={formData.mobile}
 			on:input={validateMobile}
+			name="mobile"
 			type="text"
 			placeholder="Phone Number"
 			required
@@ -195,10 +185,10 @@
 		<div class="variant-ghost-error col-span-2 p-0.5 px-2 text-xs">{formError.rePassword}</div>
 	{/if}
 	<button
-		on:click={handleLogin}
+		type="submit"
 		disabled={!formValid}
 		class="input variant-filled-primary btn col-span-2 mx-auto max-w-xs text-lg font-bold"
 	>
 		Create Account
 	</button>
-</div>
+</form>

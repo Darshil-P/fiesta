@@ -2,7 +2,7 @@ import { PASSWORD_REGEX } from '$lib/constants';
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
 import { generateTokens } from '$lib/server/jwt';
-import { userCredentialsTable } from '$lib/server/schema';
+import { userCredentialsTable, usersTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import bcrypt from 'bcryptjs';
 import { eq, sql } from 'drizzle-orm';
@@ -22,6 +22,17 @@ const selectUsersCredentials = db
 			: eq(userCredentialsTable.mobile, sql.placeholder('mobile'))
 	)
 	.prepare('select_user_credentials');
+
+const selectUser = db
+	.select({
+		userId: usersTable.userId,
+		name: usersTable.name,
+		dateCreated: usersTable.dateCreated,
+		avatarId: usersTable.avatarId
+	})
+	.from(usersTable)
+	.where(eq(usersTable.userId, sql.placeholder('userId')))
+	.prepare('select_user');
 
 export const POST = (async ({ request, cookies }) => {
 	const requestBody = await request.json();
@@ -44,7 +55,9 @@ export const POST = (async ({ request, cookies }) => {
 		throw error(401, 'Incorrect Password');
 	}
 
-	const { accessToken, refreshToken } = generateTokens({ userId: userCredentials[0].userId });
+	const user = await selectUser.execute({ userId: userCredentials[0].userId });
+
+	const { accessToken, refreshToken } = generateTokens({ user: user[0] });
 
 	cookies.set('access_token', accessToken, { path: '/', secure: false });
 	cookies.set('refresh_token', refreshToken, { path: '/', secure: false });

@@ -1,22 +1,11 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { userStore } from '$lib/stores/user';
+	import { enhance } from '$app/forms';
 	import { Avatar } from '@skeletonlabs/skeleton';
+	import type { PageServerData } from './$types';
 
-	if (!$userStore) {
-		goto('/login');
-	}
+	export let data: PageServerData;
 
-	const userProfile = $userStore!;
-
-	const handleLogout = async () => {
-		userStore.set(null);
-		const response = await fetch('/api/auth/logout', { method: 'POST' });
-
-		if (response.status == 200) {
-			goto('/');
-		}
-	};
+	const { userProfile } = data;
 </script>
 
 <h1 class="py-6 text-3xl font-bold">Your Profile</h1>
@@ -35,10 +24,9 @@
 		</span>
 		<p class="text-lg">Joined: {new Date(userProfile.dateCreated).toLocaleDateString()}</p>
 	</div>
-	<button
-		on:click={handleLogout}
-		class="variant-outline-primary btn my-8 h-fit place-self-end rounded-3xl"
-	>
-		Logout
-	</button>
+	<form method="POST" use:enhance>
+		<button type="submit" class="variant-outline-primary btn my-8 h-fit place-self-end rounded-3xl">
+			Logout
+		</button>
+	</form>
 </div>

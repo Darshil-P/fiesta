@@ -88,6 +88,13 @@ export type User = {
 	dateCreated: Date;
 };
 
+export type UserProfile = {
+	avatarId: string | null;
+	userId: number;
+	name: string;
+	dateCreated: Date;
+};
+
 type Category = {
 	categoryId: number;
 	name: string;

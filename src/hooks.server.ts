@@ -18,18 +18,28 @@ export const handleError: HandleServerError = ({ error: err }) => {
 };
 
 export const handle: Handle = async ({ event, resolve }) => {
+	const accessToken = event.cookies.get('access_token');
+
 	if (!protectedRoutes.includes(event.route.id ?? '')) {
-		return await resolve(event);
+		if (!accessToken) {
+			return await resolve(event);
+		}
+
+		try {
+			const user = verifyAccessToken(accessToken);
+			event.locals.user = user;
+		} catch (e) {
+			return await resolve(event);
+		}
 	}
 
-	const accessToken = event.cookies.get('access_token');
 	if (!accessToken) {
 		throw error(401, 'Unauthorized');
 	}
 
 	try {
-		const userId = verifyAccessToken(accessToken);
-		event.locals.userId = userId;
+		const user = verifyAccessToken(accessToken);
+		event.locals.user = user;
 	} catch (e) {
 		if (e instanceof JsonWebTokenError && e.name == 'TokenExpiredError') {
 			const refreshToken = event.cookies.get('refresh_token') as string;
@@ -38,7 +48,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 					const tokens = refreshTokens(accessToken, refreshToken);
 					event.cookies.set('access_token', tokens.accessToken, { path: '/', secure: false });
 					event.cookies.set('refresh_token', tokens.refreshToken, { path: '/', secure: false });
-					event.locals.userId = verifyAccessToken(tokens.accessToken);
+					event.locals.user = verifyAccessToken(tokens.accessToken);
 					return await resolve(event);
 				} catch (e) {
 					console.log('Token Refresh Failed:');

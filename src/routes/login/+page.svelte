@@ -1,49 +1,39 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { userStore } from '$lib/stores/user';
-	import type { User } from '$lib/types';
+	import { enhance } from '$app/forms';
+	import type { ActionData } from './$types';
 
 	let formData = {
 		email: 'darshil@gmail.com',
 		password: 'Darshil@1234'
 	};
 
-	let errorMessage: null | string;
-
 	let visibility = false;
 
-	const handleLogin = async () => {
-		const { email, password } = formData;
-
-		const response = await fetch('/api/auth/login', {
-			method: 'POST',
-			body: JSON.stringify({
-				email,
-				password
-			})
-		});
-
-		if (response.status == 200) {
-			const response = await fetch('/api/users/profile');
-			const userDetails: User = await response.json();
-			userStore.set(userDetails);
-			goto('/');
-		} else {
-			errorMessage = (await response.json()).message;
-		}
-	};
+	export let form: ActionData;
 
 	const toggleVisibility = () => (visibility = !visibility);
 </script>
 
 <form
 	method="POST"
-	on:submit|preventDefault={handleLogin}
 	class="card variant-ghost-surface mx-auto my-8 grid max-w-3xl gap-6 px-32 py-6"
+	use:enhance
 >
 	<h2 class="h2 mx-auto font-bold">Login</h2>
 	<hr />
-	{#if errorMessage}<p class="variant-ghost-error p-0.5 px-2 text-xs">{errorMessage}</p>{/if}
+	{#if form}
+		<p class="variant-ghost-error p-0.5 px-2 text-xs">
+			{form.email
+				? 'Invalid Email'
+				: form.notFound
+				? 'Email Not Registered'
+				: form.password
+				? 'Incorrect Password'
+				: form.error
+				? 'Something went wrong, please try again later'
+				: ''}
+		</p>
+	{/if}
 	<label class="label">
 		<span>Email</span>
 		<input
@@ -83,7 +73,7 @@
 	<span class="text-right text-sm">
 		Dont have an Account? <a href="/signup" class="anchor">Create one now</a>
 	</span>
-	<button class="input variant-filled-primary btn mx-auto max-w-xs text-lg font-bold">
+	<button class="input variant-filled-primary btn mx-auto max-w-xs text-lg font-bold" type="submit">
 		Submit
 	</button>
 </form>

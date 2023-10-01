@@ -25,7 +25,7 @@ const selectUserOrganizations = db
 	.prepare('select_user_organizations');
 
 export const GET = (async ({ locals }) => {
-	const userId = locals.userId;
+	const userId = locals.user.userId;
 
 	const userOrganizations = await selectUserOrganizations.execute({ userId });
 
