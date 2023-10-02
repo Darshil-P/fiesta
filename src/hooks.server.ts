@@ -1,19 +1,25 @@
 import { protectedRoutes } from '$lib/server/constants';
 import { refreshTokens, verifyAccessToken } from '$lib/server/jwt';
-import { error, type Handle, type HandleServerError } from '@sveltejs/kit';
+import { error, redirect, type Handle, type HandleServerError } from '@sveltejs/kit';
 import 'dotenv/config';
-import { JsonWebTokenError } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
-export const handleError: HandleServerError = ({ error: err }) => {
+export const handleError: HandleServerError = ({ error: err, event }) => {
 	if (err instanceof Error) {
-		if (err.message.includes('violates unique constraint')) {
-			throw error(409, err.message);
-		}
-		if (err.message.includes('violates foreign key constraint')) {
-			throw error(404, 'referring entity (id) does not exist');
+		if (event.route.id?.startsWith('/api/')) {
+			if (err.message.includes('violates unique constraint')) {
+				throw error(409, err.message);
+			}
+			if (err.message.includes('violates foreign key constraint')) {
+				throw error(404, 'referring entity (id) does not exist');
+			}
+
+			console.log(err.message);
 		}
 
-		console.log(err.stack);
+		if (err.message.includes('Not found')) {
+			throw redirect(303, '/');
+		}
 	}
 };
 
@@ -41,7 +47,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const user = verifyAccessToken(accessToken);
 		event.locals.user = user;
 	} catch (e) {
-		if (e instanceof JsonWebTokenError && e.name == 'TokenExpiredError') {
+		if (e instanceof jwt.JsonWebTokenError && e.name == 'TokenExpiredError') {
 			const refreshToken = event.cookies.get('refresh_token') as string;
 			if (refreshToken) {
 				try {

@@ -1,13 +1,14 @@
+import { DB_NAME, DB_PASSWORD, DB_USERNAME } from '$env/static/private';
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { Client } from 'pg';
+import pg from 'pg';
 
-const client = new Client({
+const client = new pg.Client({
 	host: 'db',
 	port: 5432,
-	user: process.env.DB_USERNAME,
-	password: process.env.DB_PASSWORD,
-	database: process.env.DB_NAME
+	user: DB_USERNAME,
+	password: DB_PASSWORD,
+	database: DB_NAME
 });
 
 await client.connect();

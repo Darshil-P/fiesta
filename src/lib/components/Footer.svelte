@@ -1,7 +1,7 @@
 <div class="card">
 	<div class="mx-auto grid h-48 max-w-7xl grid-cols-2 px-16 pt-4">
 		<div>
-			<img src="/fiesta.svg" alt="fiesta logo" height="sm" />
+			<img src="/fiesta.svg" alt="fiesta logo" class="h-[52px] w-[108px]" height="sm" />
 			<p>
 				Fiesta is an events platform where anyone can buy and sell event tickets. Users can list
 				their events on the platform which can be discovered by other users. Create an organization

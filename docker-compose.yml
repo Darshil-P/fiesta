@@ -13,7 +13,7 @@ services:
       - data:/app/src/lib/uploads
 
   db:
-    image: postgres
+    image: postgres:15
     container_name: fiesta_pgdb
     restart: always
     ports:

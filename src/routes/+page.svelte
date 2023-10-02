@@ -1,8 +1,8 @@
 <script lang="ts">
 	import EventCard from '$lib/components/EventCard.svelte';
 	import ScrollContainer from '$lib/components/ScrollContainer.svelte';
-	import type { PageData } from './$types';
-	export let data: PageData;
+	import type { PageServerData } from './$types';
+	export let data: PageServerData;
 </script>
 
 <h1 class="py-6 pl-16 text-3xl font-bold">Upcoming Events</h1>

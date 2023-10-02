@@ -19,7 +19,7 @@
 	}
 </script>
 
-<div class="card variant-filled-surface grid w-full grid-cols-[auto_1fr_auto] items-center">
+<div class="card variant-glass-surface grid w-full grid-cols-[auto_1fr_auto] items-center">
 	<button
 		type="button"
 		class="variant-ringed-surface variant-glass btn-icon btn-icon-sm z-10"
@@ -29,10 +29,15 @@
 	</button>
 	<div
 		bind:this={slider}
-		class="hide-scrollbar relative -left-9 flex w-[110.5%] snap-x snap-mandatory overflow-x-auto scroll-smooth"
+		class="hide-scrollbar relative -left-9 flex aspect-video w-[110.5%] snap-x snap-mandatory overflow-x-auto scroll-smooth"
 	>
 		{#each pictures as imageUrl}
-			<img class="snap-center rounded-container-token" src={imageUrl} alt="event" loading="lazy" />
+			<img
+				class="mx-auto snap-center rounded-container-token"
+				src={imageUrl}
+				alt="event"
+				loading="lazy"
+			/>
 		{/each}
 	</div>
 	<button

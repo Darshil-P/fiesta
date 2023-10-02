@@ -11,15 +11,14 @@
 
 <a
 	{href}
-	class="card variant-ringed-surface variant-glass card-hover m-2 min-w-[20rem] rounded-3xl p-px"
+	class="card variant-ringed-surface variant-glass card-hover m-2 min-w-[20rem] max-w-xs rounded-3xl p-px"
 >
 	<header class="aspect-video">
 		<img
 			src={imageUrl}
-			alt="event"
-			height="180px"
+			alt={title}
 			width="320px"
-			class="mb-2 aspect-video rounded-t-[24px]"
+			class="mb-2 aspect-video overflow-hidden rounded-t-[24px]"
 		/>
 	</header>
 	<div class="space-y-1 px-4 pb-3">
