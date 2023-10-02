@@ -20,6 +20,8 @@ export const handleError: HandleServerError = ({ error: err, event }) => {
 		if (err.message.includes('Not found')) {
 			throw redirect(303, '/');
 		}
+
+		console.log(err.stack);
 	}
 };
 

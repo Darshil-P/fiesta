@@ -18,7 +18,6 @@ const selectUserTickets = db
 
 export const GET = (async ({ locals }) => {
 	const userId = locals.user.userId;
-	console.log(userId);
 
 	const userTickets = await selectUserTickets.execute({ userId });
 

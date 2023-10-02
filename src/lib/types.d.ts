@@ -107,6 +107,18 @@ type Organization = {
 	logoId: string | null;
 };
 
+type TicketDetails = {
+	eventId: number;
+	price: number;
+	type: number;
+	ticketsTotal: number;
+	ticketsAvailable: number;
+	name: string | null;
+	startDate: string | null;
+	venue: string | null;
+	terms: string | null;
+};
+
 type FormError = {
 	[key: string]: null | string;
 };

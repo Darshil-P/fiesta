@@ -78,7 +78,14 @@
 				loading="lazy"
 			/>
 			<footer class="mt-4">
-				<button class="variant-filled-primary btn w-full font-bold">Get Your Pass!</button>
+				{#if eventDetails.status == 'selling'}
+					<a
+						href={`/buy/${eventDetails.eventId}`}
+						class="variant-filled-primary btn w-full font-bold">Get Your Pass!</a
+					>
+				{:else}
+					<span class="variant-ringed-primary badge w-full p-2">Coming Soon!</span>
+				{/if}
 			</footer>
 		</div>
 		<p class="mt-4 py-2 text-xl font-bold">Organizer</p>

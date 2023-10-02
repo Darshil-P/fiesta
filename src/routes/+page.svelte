@@ -9,12 +9,14 @@
 <ScrollContainer>
 	{#each data.upcomingEvents as event}
 		<EventCard
-			href={`/events/${event.eventId}`}
+			detailsLink={`/events/${event.eventId}`}
+			passLink={`/buy/${event.eventId}`}
 			title={event.name}
 			imageUrl={`/uploads/images/events/thumbnail/` + event.thumbnailId}
 			hostedBy={event.organization?.name ?? event.user?.name ?? 'organizer'}
 			datetime={new Date(event.startDate)}
 			category={event.category}
+			status={event.status}
 			price={event.status == 'selling' ? event.ticketPrice ?? 0 : -1}
 			venue={event.venue}
 		/>

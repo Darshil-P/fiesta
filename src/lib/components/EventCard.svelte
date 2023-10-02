@@ -1,18 +1,20 @@
 <script lang="ts">
-	export let href: string;
+	export let detailsLink: string;
+	export let passLink: string;
 	export let title: string;
 	export let hostedBy: string;
 	export let imageUrl: string;
 	export let datetime: Date;
 	export let category: string;
+	export let status: string;
 	export let venue: string;
 	export let price: number;
 </script>
 
-<a
-	{href}
-	class="card variant-ringed-surface variant-glass card-hover m-2 min-w-[20rem] max-w-xs rounded-3xl p-px"
+<div
+	class="card variant-ringed-surface variant-glass card-hover relative m-2 min-w-[20rem] max-w-xs rounded-3xl p-px"
 >
+	<a class="absolute bottom-0 left-0 right-0 top-0" href={detailsLink}>&nbsp</a>
 	<header class="aspect-video">
 		<img
 			src={imageUrl}
@@ -48,6 +50,12 @@
 				₹ : {price == 0 ? 'Free!' : price}
 			{/if}
 		</p>
-		<button class="variant-filled-primary btn btn-sm mx-4 font-bold">Get Your Pass!</button>
+		{#if status == 'selling'}
+			<a href={passLink} class="variant-filled-primary btn btn-sm z-10 mx-4 font-bold"
+				>Get Your Pass!</a
+			>
+		{:else}
+			<span class="variant-ringed-primary badge mx-4 p-2">Coming Soon!</span>
+		{/if}
 	</footer>
-</a>
+</div>

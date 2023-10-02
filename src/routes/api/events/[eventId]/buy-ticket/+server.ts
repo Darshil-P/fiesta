@@ -121,5 +121,5 @@ export const POST = (async ({ request, params, locals }) => {
 
 	await setTicketAvailability.execute({ eventId, ticketsAvailable });
 
-	return jsonResponse(JSON.stringify('Ticked Booked'));
+	return jsonResponse(JSON.stringify({ transactionId: transaction.transactionId }));
 }) satisfies RequestHandler;
