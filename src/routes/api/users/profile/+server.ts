@@ -5,7 +5,13 @@ import { error, type RequestHandler } from '@sveltejs/kit';
 import { eq, sql } from 'drizzle-orm';
 
 const selectUserProfile = db
-	.select()
+	.select({
+		userId: usersTable.userId,
+		name: usersTable.name,
+		dateCreated: usersTable.dateCreated,
+		avatarId: usersTable.avatarId,
+		about: usersTable.about
+	})
 	.from(usersTable)
 	.where(eq(usersTable.userId, sql.placeholder('userId')))
 	.prepare('select_user_profile');

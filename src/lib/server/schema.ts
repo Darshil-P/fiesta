@@ -32,7 +32,8 @@ export const usersTable = pgTable('users', {
 	dateCreated: timestamp('date_created', { withTimezone: true })
 		.notNull()
 		.default(sql`CURRENT_TIMESTAMP`),
-	avatarId: text('avatar_id')
+	avatarId: text('avatar_id'),
+	about: text('about')
 });
 
 export const ticketsTable = pgTable('tickets', {

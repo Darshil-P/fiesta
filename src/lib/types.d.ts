@@ -93,6 +93,7 @@ export type UserProfile = {
 	userId: number;
 	name: string;
 	dateCreated: Date;
+	about: string | null;
 };
 
 type Category = {
