@@ -37,6 +37,23 @@ export const handle: Handle = async ({ event, resolve }) => {
 			const user = verifyAccessToken(accessToken);
 			event.locals.user = user;
 		} catch (e) {
+			if (e instanceof jwt.JsonWebTokenError && e.name == 'TokenExpiredError') {
+				const refreshToken = event.cookies.get('refresh_token') as string;
+				if (refreshToken) {
+					try {
+						const tokens = refreshTokens(accessToken, refreshToken);
+						event.cookies.set('access_token', tokens.accessToken, { path: '/', secure: false });
+						event.cookies.set('refresh_token', tokens.refreshToken, { path: '/', secure: false });
+						event.locals.user = verifyAccessToken(tokens.accessToken);
+						return await resolve(event);
+					} catch (e) {
+						event.cookies.delete('access_token', { path: '/', secure: false });
+						event.cookies.delete('refresh_token', { path: '/', secure: false });
+						console.log('Token Refresh Failed:');
+						console.log(e);
+					}
+				}
+			}
 			return await resolve(event);
 		}
 	}
@@ -59,6 +76,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 					event.locals.user = verifyAccessToken(tokens.accessToken);
 					return await resolve(event);
 				} catch (e) {
+					event.cookies.delete('access_token', { path: '/', secure: false });
+					event.cookies.delete('refresh_token', { path: '/', secure: false });
 					console.log('Token Refresh Failed:');
 					console.log(e);
 				}
