@@ -96,6 +96,18 @@ export type UserProfile = {
 	about: string | null;
 };
 
+export type Ticket = {
+	ticketId: number;
+	userId: number;
+	eventId: number;
+	status: string;
+	transactionId: number;
+	name: string | null;
+	thumbnailId: string | null;
+	startDate: string | null;
+	venue: string | null;
+};
+
 type Category = {
 	categoryId: number;
 	name: string;

@@ -1,4 +1,4 @@
-import type { Event, UserProfile } from '$lib/types';
+import type { Event, Ticket, UserProfile } from '$lib/types';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
@@ -10,11 +10,15 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
 	const profileResponse = await fetch('/api/users/profile');
 	const userProfile: UserProfile = await profileResponse.json();
 
+	const ticketsResponse = await fetch('/api/users/tickets');
+	const userTickets: Array<Ticket> = await ticketsResponse.json();
+
 	const eventsResponse = await fetch('/api/users/events');
 	const userEvents: Array<Event> = await eventsResponse.json();
 
 	return {
 		userProfile,
+		userTickets,
 		userEvents
 	};
 };

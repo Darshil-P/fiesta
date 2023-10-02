@@ -42,6 +42,37 @@
 	</div>
 
 	<div class="my-4">
+		<h3 class="h3 px-16 py-4 font-bold">Event Passes</h3>
+		<ScrollContainer>
+			{#each data.userTickets as ticket}
+				<div
+					class="card variant-ringed-surface variant-glass relative m-2 grid min-w-[20rem] max-w-xs grid-cols-2 rounded-lg p-px"
+				>
+					<a href={`/events/${ticket.eventId}`}>
+						<img
+							src={`/uploads/images/events/thumbnail/` + ticket.thumbnailId}
+							alt={ticket.name}
+							width="136px"
+							class="m-2 mb-2 aspect-video overflow-hidden rounded-[8px]"
+						/>
+					</a>
+
+					<div class="space-y-1 pb-3">
+						<p class="line-clamp-1 overflow-hidden text-xl font-bold">{ticket.name}</p>
+						<p class="line-clamp-1 overflow-hidden font-semibold">{ticket.startDate}</p>
+						<p class="line-clamp-1 overflow-ellipsis break-words font-semibold">
+							Venue: {ticket.venue}
+						</p>
+						<p class="line-clamp-1 overflow-hidden font-semibold">
+							Pass ID: {ticket.ticketId}
+						</p>
+					</div>
+				</div>
+			{/each}
+		</ScrollContainer>
+	</div>
+
+	<div class="my-4">
 		<h3 class="h3 px-16 py-4 font-bold">Your Events</h3>
 		<ScrollContainer>
 			{#each data.userEvents as event}

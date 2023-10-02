@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
-import { ticketsTable } from '$lib/server/schema';
+import { eventsTable, ticketsTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { eq, sql } from 'drizzle-orm';
 
@@ -10,11 +10,16 @@ const selectUserTickets = db
 		userId: ticketsTable.userId,
 		eventId: ticketsTable.eventId,
 		status: ticketsTable.status,
-		transactionId: ticketsTable.transactionId
+		transactionId: ticketsTable.transactionId,
+		name: eventsTable.name,
+		thumbnailId: eventsTable.thumbnailId,
+		startDate: eventsTable.startDate,
+		venue: eventsTable.venue
 	})
 	.from(ticketsTable)
 	.where(eq(ticketsTable.userId, sql.placeholder('userId')))
-	.prepare('select_user_tickets');
+	.leftJoin(eventsTable, eq(eventsTable.eventId, ticketsTable.eventId));
+// .prepare('select_user_tickets');
 
 export const GET = (async ({ locals }) => {
 	const userId = locals.user.userId;
