@@ -16,8 +16,11 @@ const selectUserProfile = db
 	.where(eq(usersTable.userId, sql.placeholder('userId')))
 	.prepare('select_user_profile');
 
-export const GET = (async ({ locals }) => {
-	const userId = locals.user.userId;
+export const GET = (async ({ locals, params }) => {
+	let userId = Number.parseInt(params.userId ?? '');
+	if (Number.isNaN(userId)) {
+		userId = locals.user.userId;
+	}
 
 	const users = await selectUserProfile.execute({ userId });
 

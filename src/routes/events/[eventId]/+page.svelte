@@ -92,7 +92,7 @@
 		<InfoCard
 			href={eventDetails.organization
 				? `/organization/${eventDetails.organization.organizationId}`
-				: `/users/${eventDetails.user?.userId}`}
+				: `/profile/${eventDetails.user?.userId}`}
 			title={organizer.name ?? ''}
 			verified={eventDetails.organization?.verified ?? false}
 			imageUrl={organizer.imageUrl}
