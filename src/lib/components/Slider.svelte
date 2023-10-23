@@ -32,12 +32,14 @@
 		class="hide-scrollbar relative -left-9 flex aspect-video w-[110.5%] snap-x snap-mandatory overflow-x-auto scroll-smooth"
 	>
 		{#each pictures as imageUrl}
-			<img
-				class="mx-auto snap-center rounded-container-token"
-				src={imageUrl}
-				alt="event"
-				loading="lazy"
-			/>
+			<div class="flex min-w-[769px] justify-center">
+				<img
+					class="object-contain rounded-container-token"
+					src={imageUrl}
+					alt="event"
+					loading="lazy"
+				/>
+			</div>
 		{/each}
 	</div>
 	<button

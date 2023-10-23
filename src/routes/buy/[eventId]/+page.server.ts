@@ -2,7 +2,9 @@ import type { TicketDetails } from '$lib/types';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ params, fetch }) => {
+export const load: PageServerLoad = async ({ params, fetch, locals }) => {
+	if (!locals.user) throw redirect(303, '/login');
+
 	const eventId = params.eventId;
 
 	const response = await fetch(`/api/events/${eventId}/ticket-details`);
