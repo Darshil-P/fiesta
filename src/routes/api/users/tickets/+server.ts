@@ -2,7 +2,7 @@ import { db } from '$lib/server/db';
 import { jsonResponse } from '$lib/server/helper';
 import { eventsTable, ticketsTable } from '$lib/server/schema';
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, gt, sql } from 'drizzle-orm';
 
 const selectUserTickets = db
 	.select({
@@ -17,9 +17,14 @@ const selectUserTickets = db
 		venue: eventsTable.venue
 	})
 	.from(ticketsTable)
-	.where(eq(ticketsTable.userId, sql.placeholder('userId')))
-	.leftJoin(eventsTable, eq(eventsTable.eventId, ticketsTable.eventId));
-// .prepare('select_user_tickets');
+	.where(
+		and(
+			eq(ticketsTable.userId, sql.placeholder('userId')),
+			gt(eventsTable.endDate, sql`${new Date().toISOString().substring(0, 10)}`)
+		)
+	)
+	.leftJoin(eventsTable, eq(eventsTable.eventId, ticketsTable.eventId))
+	.prepare('select_user_tickets');
 
 export const GET = (async ({ locals }) => {
 	const userId = locals.user.userId;

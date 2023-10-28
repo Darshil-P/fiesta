@@ -42,7 +42,10 @@
 	</div>
 
 	<div class="my-4">
-		<h3 class="h3 px-16 py-4 font-bold">Event Passes</h3>
+		<span class="flex columns-2 justify-between">
+			<h3 class="h3 px-16 py-4 font-bold">Event Passes</h3>
+			<a href="/booking-history" class="anchor px-16 py-4 font-bold">Show all bookings</a>
+		</span>
 		<ScrollContainer>
 			{#each data.userTickets as ticket}
 				<div
